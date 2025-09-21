@@ -1,4 +1,5 @@
 import 'package:consultancy_website/screens/shop.dart' show ShopPage;
+import 'package:consultancy_website/widgets/navitemsdropdown/newsroom.dart';
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 // import 'screens/events_page.dart';
@@ -29,7 +30,7 @@ class MainApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomeScreen(),
         // '/events': (context) => const even(),
-        // '/newsroom': (context) => const NewsroomPage(),
+        '/newsroom': (context) => const Newsroom(),
         '/shop': (context) => const ShopPage(),
         // '/consult': (context) => const ConsultPage(),
       },

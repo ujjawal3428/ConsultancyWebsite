@@ -65,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen>
               // Future sections will be added here
               // ServicesSection(),
               // AboutSection(),
-              // TestimonialsSection(),
               // ContactSection(),
             ],
           ),
