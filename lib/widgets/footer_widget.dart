@@ -95,7 +95,7 @@ class FooterSection extends StatelessWidget {
                 const SizedBox(height: 30),
                 // Company Info
                 const Text(
-                  'Bay Education Partners Pvt. Ltd. | ©TheRedPen | 2025',
+                  'Bale Education Country Pvt. Ltd. | ©The IQAdmit | 2025',
                   style: TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 14,
@@ -106,7 +106,7 @@ class FooterSection extends StatelessWidget {
                 const SizedBox(height: 15),
                 // Address
                 const Text(
-                  'Corporate Office: Suite #311, Prasad Chambers, Tata Rd No 2, Charni Road East, Opera House,\nGirgaon, Mumbai, Maharashtra 400004 | Number: +91 98204 91179',
+                  'Corporate Office: Apartment #2828, Secret Wars, Junwani Road, Beti Road West, Maore Villa,\n Bhilai, 490001, Chhattisgarh | Number: +91 98383 87333',
                   style: TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 12,

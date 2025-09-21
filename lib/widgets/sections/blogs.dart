@@ -70,7 +70,7 @@ class BlogSection extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 20),
-      color: const Color(0xFFF8F9FA),
+      color: Colors.white,
       child: Column(
         children: [
           // Section Header
@@ -79,7 +79,7 @@ class BlogSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 48,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF2C3E50),
+              color: Color.fromARGB(255, 0, 0, 0),
             ),
           ),
           const SizedBox(height: 16),
@@ -120,8 +120,8 @@ class BlogSection extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: 24,
-                    mainAxisSpacing: 24,
+                    crossAxisSpacing: 54,
+                    mainAxisSpacing: 54,
                     childAspectRatio: childAspectRatio,
                   ),
                   itemCount: _blogPosts.length,
