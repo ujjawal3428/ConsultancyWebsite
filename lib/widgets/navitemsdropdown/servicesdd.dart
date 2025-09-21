@@ -6,146 +6,97 @@ class ServicesMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // No extra padding/margin
+      width: 200, // fixed width
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: const Color(0x0F000000), // ✅ FIXED: Direct ARGB value instead of withOpacity
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: Column(
-        children: [
-          // 🔴 Top strip
-          Container(
-            height: 5,
-            decoration: const BoxDecoration(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Top red strip
+            Container(
+              height: 5,
+              width: double.infinity,
               color: Colors.red,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
             ),
-          ),
-
-          Expanded(
-            child: SingleChildScrollView(
-              child: _buildServiceCategories(),
-            ),
-          ),
-
-          // 🔴 Bottom strip
-          Container(
-            height: 5,
-            decoration: const BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildServiceCategories() {
-    return Column(
-      children: [
-        _buildServiceCategory(
-          [
-            {'title': 'Undergraduate Preparation', 'icon': Icons.school_rounded},
-            {'title': 'Undergraduate Admissions', 'icon': Icons.account_balance_rounded},
-            {'title': 'Boarding School Admissions', 'icon': Icons.home_rounded},
-            {'title': 'Postgraduate Admissions', 'icon': Icons.psychology_rounded},
-            {'title': 'MBA Admissions', 'icon': Icons.business_center_rounded},
-            {'title': 'Education Counselling', 'icon': Icons.support_agent_rounded},
-            {'title': 'INK | Interactive Narrative Kit', 'icon': Icons.auto_stories_rounded},
-            {'title': 'Visa Services', 'icon': Icons.flight_takeoff_rounded},
-          ],
-        ),
-        _buildServiceCategory(
-          [
-            {'title': 'Undergraduate Admissions', 'icon': Icons.school_rounded},
-            {'title': 'Counselling for Schools', 'icon': Icons.domain_rounded},
-            {'title': 'Postgraduate Admissions', 'icon': Icons.psychology_rounded},
-            {'title': 'Counselling for Colleges', 'icon': Icons.corporate_fare_rounded},
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildServiceCategory(List<Map<String, dynamic>> services) {
-    return Column(
-      children: services.asMap().entries.map((entry) {
-        final isLast = entry.key == services.length - 1;
-        return _buildServiceItem(
-          entry.value['title'] as String,
-          entry.value['icon'] as IconData,
-          isLast,
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildServiceItem(String title, IconData icon, bool isLast) {
-    return StatefulBuilder(
-      builder: (context, setState) {
-
-        return InkWell(
-          onTap: () => print('Tapped on: $title'),
-          borderRadius: isLast
-              ? const BorderRadius.only(
-                  bottomLeft: Radius.circular(16),
-                  bottomRight: Radius.circular(16),
-                )
-              : BorderRadius.zero,
-          child: Container(
-            padding: const EdgeInsets.all(18),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: !isLast
-                  ? const Border(
-                      bottom: BorderSide(
-                        color: Color(0xFFF3F4F6),
-                        width: 1,
-                      ),
-                    )
-                  : null,
-            ),
-            child: Row(
+        
+            // For Students & Parents section
+            _buildSectionHeader("For Students & Parents"),
+            Column(
               children: [
-                Icon(
-                  icon,
-                  color:Colors.white,
-                  size: 18,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 12,
-                  color: Colors.white,
-                ),
+                _buildMenuItem("Undergraduate Preparation"),
+                _buildMenuItem("Undergraduate Admissions"),
+                _buildMenuItem("Boarding School Admissions"),
+                _buildMenuItem("Postgraduate Admissions"),
+                _buildMenuItem("MBA Admissions"),
+                _buildMenuItem("Education Counselling"),
+                _buildMenuItem("INK | Interactive Narrative Kit"),
+                _buildMenuItem("Visa Services"),
               ],
             ),
-          ),
-        );
-      },
+        
+            // For Institutions section
+            _buildSectionHeader("For Institutions"),
+            Column(
+              children: [
+                _buildMenuItem("Undergraduate Admissions"),
+                _buildMenuItem("Counselling for Schools"),
+                _buildMenuItem("Postgraduate Admissions"),
+                _buildMenuItem("Counselling for Colleges"),
+              ],
+            ),
+        
+            // Bottom red strip
+            Container(
+              height: 5,
+              width: double.infinity,
+              color: Colors.red,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  /// ✅ Mobile version with fixed opacity colors
+  Widget _buildSectionHeader(String title) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: const BoxDecoration(
+        color: Color(0xFFF9FAFB),
+        border: Border(
+          top: BorderSide(color: Color(0xFFE5E7EB), width: 1),
+          bottom: BorderSide(color: Color(0xFFE5E7EB), width: 1),
+        ),
+      ),
+      child: Text(
+        title,
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontFamily: 'Montserrat',
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF6B7280),
+          letterSpacing: 0.5,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMenuItem(String title) {
+    return _HoverText(title: title);
+  }
+
+  /// Mobile version menu items
   static List<Widget> getMobileMenuItems() {
     final studentServices = [
       'Undergraduate Preparation',
@@ -166,95 +117,215 @@ class ServicesMenu extends StatelessWidget {
     ];
 
     List<Widget> allItems = [];
-
+    
     // Student Services Header
     allItems.add(
       Container(
         margin: const EdgeInsets.only(top: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        decoration: BoxDecoration(
-          color: const Color(0x26F44336), // ✅ FIXED: Direct ARGB value for red with 15% opacity
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: const Text(
-          'For Students & Parents',
-          style: TextStyle(
-            fontFamily: 'Montserrat',
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: Colors.red,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: const BoxDecoration(
+          color: Color(0xFFF9FAFB),
+          border: Border(
+            top: BorderSide(color: Color(0xFFE5E7EB), width: 1),
+            bottom: BorderSide(color: Color(0xFFE5E7EB), width: 1),
           ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 5,
+              height: 5,
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'For Students & Parents',
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF6B7280),
+                letterSpacing: 0.3,
+              ),
+            ),
+          ],
         ),
       ),
     );
-
+    
     // Student Services Items
     allItems.addAll(
-      studentServices.map((service) => ListTile(
-            title: Text(
-              service,
-              style: const TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: Colors.red,
+      studentServices.map((service) => Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            print('Mobile tapped: $service');
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Color(0xFFF3F4F6), width: 1),
               ),
             ),
-            trailing: const Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 12,
-              color: Colors.red,
+            child: Row(
+              children: [
+                Container(
+                  width: 5,
+                  height: 5,
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    service,
+                    style: const TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF374151),
+                    ),
+                  ),
+                ),
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 12,
+                  color: Color(0xFF9CA3AF),
+                ),
+              ],
             ),
-            onTap: () {
-              print('Mobile tapped: $service');
-            },
-          )),
+          ),
+        ),
+      )),
     );
 
     // Institution Services Header
     allItems.add(
       Container(
-        margin: const EdgeInsets.only(top: 16),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        decoration: BoxDecoration(
-          color: const Color(0x26F44336), // ✅ FIXED: Direct ARGB value for red with 15% opacity
-          borderRadius: BorderRadius.circular(8),
+        margin: const EdgeInsets.only(top: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: const BoxDecoration(
+          color: Color(0xFFF9FAFB),
+          border: Border(
+            top: BorderSide(color: Color(0xFFE5E7EB), width: 1),
+            bottom: BorderSide(color: Color(0xFFE5E7EB), width: 1),
+          ),
         ),
-        child: const Text(
-          'For Institutions',
+        child: Row(
+          children: [
+            Container(
+              width: 5,
+              height: 5,
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'For Institutions',
+              style: TextStyle(
+                fontFamily: 'Montserrat',
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF6B7280),
+                letterSpacing: 0.3,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    
+    // Institution Services Items
+    allItems.addAll(
+      institutionServices.map((service) => Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            print('Mobile tapped: $service');
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Color(0xFFF3F4F6), width: 1),
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 5,
+                  height: 5,
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    service,
+                    style: const TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF374151),
+                    ),
+                  ),
+                ),
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 12,
+                  color: Color(0xFF9CA3AF),
+                ),
+              ],
+            ),
+          ),
+        ),
+      )),
+    );
+
+    return allItems;
+  }
+}
+
+// Hover text widget
+class _HoverText extends StatefulWidget {
+  final String title;
+  const _HoverText({required this.title});
+
+  @override
+  State<_HoverText> createState() => _HoverTextState();
+}
+
+class _HoverTextState extends State<_HoverText> {
+  bool _isHovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovering = true),
+      onExit: (_) => setState(() => _isHovering = false),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        child: Text(
+          widget.title,
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontFamily: 'Montserrat',
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: Colors.red,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: _isHovering ? Colors.red : const Color(0xFF374151),
           ),
         ),
       ),
     );
-
-    // Institution Services Items
-    allItems.addAll(
-      institutionServices.map((service) => ListTile(
-            title: Text(
-              service,
-              style: const TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: Colors.red,
-              ),
-            ),
-            trailing: const Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 12,
-              color: Colors.red,
-            ),
-            onTap: () {
-              print('Mobile tapped: $service');
-            },
-          )),
-    );
-
-    return allItems;
   }
 }
