@@ -6,122 +6,69 @@ class FindYourPathSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final _ = screenWidth >= 1024;
+    final isDesktop = screenWidth >= 1024;
     final isTablet = screenWidth >= 768 && screenWidth < 1024;
     final isMobile = screenWidth < 768;
-    
+
     return Column(
       children: [
-        // Grey background section - ends at middle of service cards
-        Stack(
-          children: [
-            // Grey background container
-            Container(
-              width: double.infinity,
-              color: Colors.grey[100],
+        // Grey background section with main content
+        Container(
+          width: double.infinity,
+          color: Colors.grey[100],
+          child: Container(
+            padding: EdgeInsets.symmetric(
+              vertical: isMobile ? 40 : 80,
+              horizontal: isMobile ? 16 : 20,
+            ),
+            child: Center(
               child: Container(
-                padding: EdgeInsets.symmetric(
-                  vertical: isMobile ? 40 : 80,
-                  horizontal: isMobile ? 16 : 20,
-                ),
-                child: Container(
-                  constraints: const BoxConstraints(maxWidth: 1200),
-                  width: double.infinity,
-                  child: isMobile
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            _buildImagePlaceholder(isMobile: true),
-                            const SizedBox(height: 40),
-                            _buildLeftContent(isMobile: true),
-                            const SizedBox(height: 40),
-                            // Add space for half of service card height
-                            SizedBox(height: _getServiceCardHeight(true) / 2),
-                          ],
-                        )
-                      : isTablet
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 5,
-                                      child: _buildImagePlaceholder(isTablet: true),
-                                    ),
-                                    Expanded(
-                                      flex: 5,
-                                      child: _buildLeftContent(isTablet: true),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 60),
-                                // Add space for half of service card height
-                                SizedBox(height: _getServiceCardHeight(false) / 2),
-                              ],
-                            )
-                          : Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 5,
-                                      child: _buildImagePlaceholder(),
-                                    ),
-                                    Expanded(
-                                      flex: 5,
-                                      child: _buildLeftContent(),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 80),
-                                // Add space for half of service card height
-                                SizedBox(height: _getServiceCardHeight(false) / 2),
-                              ],
-                            ),
+                constraints: const BoxConstraints(maxWidth: 1200),
+                width: double.infinity,
+                child: _buildMainContent(
+                  isMobile: isMobile,
+                  isTablet: isTablet,
+                  isDesktop: isDesktop,
                 ),
               ),
             ),
-            // Positioned service cards that overlap the background boundary
-            Positioned(
-              bottom: 40,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  constraints: const BoxConstraints(maxWidth: 1200),
-                  padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 20),
-                  child: _buildServiceCards(
-                    isMobile: isMobile, 
-                    isTablet: isTablet, 
-                    isDesktop: !isMobile && !isTablet
-                  ),
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
-        
-        // White background section - starts from middle of service cards
+
+        // Service cards section with overlapping effect
+        Transform.translate(
+          offset: Offset(0, isMobile ? -40 : -60),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 20),
+            child: Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: _buildServiceCards(
+                  isMobile: isMobile,
+                  isTablet: isTablet,
+                  isDesktop: isDesktop,
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        // White background section with remaining content
         Container(
           width: double.infinity,
           color: Colors.white,
           child: Column(
             children: [
-              // Add space for the bottom half of service cards
-              SizedBox(height: _getServiceCardHeight(isMobile) / 2),
-              
-              // Add spacing between service cards and additional content
-              SizedBox(height: isMobile ? 20 : 0),
-              
-              // Additional content without background
+              // Adjust spacing after service cards
+              SizedBox(height: isMobile ? 0 : 20),
+
+              // Additional content
               _buildAdditionalContent(isMobile: isMobile),
-               SizedBox(height: isMobile ? 20 : 10),
-              
+              SizedBox(height: isMobile ? 20 : 40),
+
               // Admissions Open Section
               _buildAdmissionsSection(isMobile: isMobile, isTablet: isTablet),
-              
+
               // Bottom padding
               SizedBox(height: isMobile ? 40 : 60),
             ],
@@ -131,94 +78,153 @@ class FindYourPathSection extends StatelessWidget {
     );
   }
 
-  double _getServiceCardHeight(bool isMobile) {
-    // Calculate approximate height of service cards including padding
-    double iconSize = isMobile ? 20 : 35;
-    double iconTextSpacing = isMobile ? 8 : 20;
-    double textHeight = isMobile ? 24 : 34; // Approximate for 2 lines
-    double cardPadding = isMobile ? 24 : 40; // Top + bottom padding
-    double rowSpacing = isMobile ? 16 : 20; // For mobile/tablet 2-row layout
-    
-    return iconSize + iconTextSpacing + textHeight + cardPadding + (isMobile ? rowSpacing : 0);
+  Widget _buildMainContent({
+    required bool isMobile,
+    required bool isTablet,
+    required bool isDesktop,
+  }) {
+    if (isMobile) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildImagePlaceholder(isMobile: true),
+          const SizedBox(height: 32),
+          _buildLeftContent(isMobile: true),
+        ],
+      );
+    } else {
+      return Row(
+        children: [
+          Expanded(
+            flex: 5,
+            child: _buildImagePlaceholder(
+              isTablet: isTablet,
+              isDesktop: isDesktop,
+            ),
+          ),
+          const SizedBox(width: 40),
+          Expanded(
+            flex: 5,
+            child: _buildLeftContent(isTablet: isTablet, isDesktop: isDesktop),
+          ),
+        ],
+      );
+    }
   }
 
-  Widget _buildLeftContent({bool isMobile = false, bool isTablet = false}) {
-    return Container(
-      padding: EdgeInsets.only(left: isMobile ? 0 : 50),
-      child: Column(
-        crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-        children: [
-          // Main Heading
-          Text(
-            'Find Your Path',
-            textAlign: isMobile ? TextAlign.center : TextAlign.start,
-            style: TextStyle(
-              fontFamily: 'The Seasons',
-              fontSize: isMobile ? 28 : isTablet ? 40 : 55,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              height: 1.1,
+  Widget _buildLeftContent({
+    bool isMobile = false,
+    bool isTablet = false,
+    bool isDesktop = false,
+  }) {
+    return Column(
+      crossAxisAlignment: isMobile
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
+      children: [
+        // Main Heading
+        Text(
+          'Find Your Path',
+          textAlign: isMobile ? TextAlign.center : TextAlign.start,
+          style: TextStyle(
+            fontFamily: 'The Seasons',
+            fontSize: _getResponsiveFontSize(
+              mobile: 28,
+              tablet: 42,
+              desktop: 55,
+              isMobile: isMobile,
+              isTablet: isTablet,
             ),
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            height: 1.1,
           ),
-          const SizedBox(height: 24),
-          
-          // Subtitle
-          Text(
-            'Discover the next steps in your\neducational journey!',
-            textAlign: isMobile ? TextAlign.center : TextAlign.start,
-            style: TextStyle(
-              fontFamily: 'Montserrat',
-              fontSize: isMobile ? 18 : isTablet ? 20 : 24,
-              fontWeight: FontWeight.w400,
-              color: Colors.black.withValues(alpha : 0.8),
-              height: 1.4,
+        ),
+        const SizedBox(height: 24),
+
+        // Subtitle
+        Text(
+          'Discover the next steps in your\neducational journey!',
+          textAlign: isMobile ? TextAlign.center : TextAlign.start,
+          style: TextStyle(
+            fontFamily: 'Montserrat',
+            fontSize: _getResponsiveFontSize(
+              mobile: 16,
+              tablet: 18,
+              desktop: 22,
+              isMobile: isMobile,
+              isTablet: isTablet,
             ),
+            fontWeight: FontWeight.w400,
+            color: Colors.black.withValues(alpha: 0.8),
+            height: 1.4,
           ),
-          const SizedBox(height: 40),
-          
-          // CTA Button
-          ElevatedButton(
+        ),
+        const SizedBox(height: 32),
+
+        // CTA Button
+        SizedBox(
+          width: isMobile ? double.infinity : null,
+          child: ElevatedButton(
             onPressed: () {
               // Add navigation logic here
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFDC2626), // Red color
+              backgroundColor: const Color(0xFFDC2626),
               foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(
                 horizontal: isMobile ? 24 : 32,
-                vertical: isMobile ? 14 : 16,
+                vertical: isMobile ? 16 : 18,
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              elevation: 0,
+              elevation: 2,
             ),
             child: Text(
               'Book An Appointment',
               style: TextStyle(
                 fontFamily: 'Montserrat',
-                fontSize: isMobile ? 14 : 16,
+                fontSize: _getResponsiveFontSize(
+                  mobile: 14,
+                  tablet: 15,
+                  desktop: 16,
+                  isMobile: isMobile,
+                  isTablet: isTablet,
+                ),
                 fontWeight: FontWeight.w600,
               ),
             ),
           ),
-        ],
-      ),
+        ),
+        SizedBox(height: isMobile ? 40 : 0),
+      ],
     );
   }
 
-  Widget _buildImagePlaceholder({bool isMobile = false, bool isTablet = false}) {
+  Widget _buildImagePlaceholder({
+    bool isMobile = false,
+    bool isTablet = false,
+    bool isDesktop = false,
+  }) {
     return Container(
-      height: isMobile ? 250 : isTablet ? 350 : 400,
-      margin: EdgeInsets.only(right: isMobile ? 0 : 40, left: isMobile ? 0 : 60),
+      height: isMobile
+          ? 250
+          : isTablet
+          ? 320
+          : 380,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha : 0.5),
+        color: Colors.white.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.grey.withValues(alpha : 0.3),
-          style: BorderStyle.solid,
-          width: 2,
-        ),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.3), width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Center(
         child: Column(
@@ -226,8 +232,12 @@ class FindYourPathSection extends StatelessWidget {
           children: [
             Icon(
               Icons.image_outlined,
-              size: isMobile ? 32 : isTablet ? 40 : 48,
-              color: Colors.grey.withValues(alpha : 0.6),
+              size: isMobile
+                  ? 32
+                  : isTablet
+                  ? 40
+                  : 48,
+              color: Colors.grey.withValues(alpha: 0.6),
             ),
             const SizedBox(height: 8),
             Text(
@@ -235,7 +245,7 @@ class FindYourPathSection extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'Montserrat',
                 fontSize: isMobile ? 14 : 16,
-                color: Colors.grey.withValues(alpha : 0.8),
+                color: Colors.grey.withValues(alpha: 0.8),
               ),
             ),
           ],
@@ -244,7 +254,11 @@ class FindYourPathSection extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceCards({required bool isMobile, required bool isTablet, required bool isDesktop}) {
+  Widget _buildServiceCards({
+    required bool isMobile,
+    required bool isTablet,
+    required bool isDesktop,
+  }) {
     final serviceData = [
       {'icon': Icons.school_outlined, 'title': 'Boarding School\nAdmissions'},
       {'icon': Icons.person_outline, 'title': 'Undergraduate\nPreparation'},
@@ -255,287 +269,217 @@ class FindYourPathSection extends StatelessWidget {
     ];
 
     if (isDesktop) {
-      // Desktop: All 6 cards in single row (6x1) - all cards at the border
-      return Container(
-        constraints: const BoxConstraints(maxWidth: 1200),
-        child: Row(
-          children: serviceData.map((service) {
-            return Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: _buildServiceCard(
-                  icon: service['icon'] as IconData,
-                  title: service['title'] as String,
-                  isMobile: false,
-                ),
+      // Desktop: All 6 cards in single row
+      return Row(
+        children: serviceData.map((service) {
+          return Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: _ServiceCard(
+                icon: service['icon'] as IconData,
+                title: service['title'] as String,
+                isMobile: false,
               ),
-            );
-          }).toList(),
-        ),
+            ),
+          );
+        }).toList(),
       );
     } else if (isTablet) {
-      // Tablet: 3x2 layout - first row cards at the border
-      return Container(
-        constraints: const BoxConstraints(maxWidth: 800),
-        child: Column(
-          children: [
-            Row(
-              children: serviceData.take(3).map((service) {
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: _buildServiceCard(
-                      icon: service['icon'] as IconData,
-                      title: service['title'] as String,
-                      isMobile: false,
-                    ),
+      // Tablet: 3x2 layout
+      return Column(
+        children: [
+          Row(
+            children: serviceData.take(3).map((service) {
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: _ServiceCard(
+                    icon: service['icon'] as IconData,
+                    title: service['title'] as String,
+                    isMobile: false,
                   ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              children: serviceData.skip(3).take(3).map((service) {
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: _buildServiceCard(
-                      icon: service['icon'] as IconData,
-                      title: service['title'] as String,
-                      isMobile: false,
-                    ),
+                ),
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: serviceData.skip(3).take(3).map((service) {
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: _ServiceCard(
+                    icon: service['icon'] as IconData,
+                    title: service['title'] as String,
+                    isMobile: false,
                   ),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
       );
     } else {
-      // Mobile: 3x1 layout - only first row (3 cards) at the border
-      return Container(
-        constraints: const BoxConstraints(maxWidth: 500),
-        child: Column(
-          children: [
-            Row(
-              children: serviceData.take(3).map((service) {
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: _buildServiceCard(
-                      icon: service['icon'] as IconData,
-                      title: service['title'] as String,
-                      isMobile: true,
-                    ),
+      // Mobile: 2x3 layout for better fit
+      return Column(
+        children: [
+          Row(
+            children: serviceData.take(2).map((service) {
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: _ServiceCard(
+                    icon: service['icon'] as IconData,
+                    title: service['title'] as String,
+                    isMobile: true,
                   ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: serviceData.skip(3).take(3).map((service) {
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: _buildServiceCard(
-                      icon: service['icon'] as IconData,
-                      title: service['title'] as String,
-                      isMobile: true,
-                    ),
+                ),
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: serviceData.skip(2).take(2).map((service) {
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: _ServiceCard(
+                    icon: service['icon'] as IconData,
+                    title: service['title'] as String,
+                    isMobile: true,
                   ),
-                );
-              }).toList(),
-            ),
-          ],
-        ),
+                ),
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: serviceData.skip(4).take(2).map((service) {
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: _ServiceCard(
+                    icon: service['icon'] as IconData,
+                    title: service['title'] as String,
+                    isMobile: true,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
       );
     }
   }
 
-  Widget _buildServiceCard({
-    required IconData icon,
-    required String title,
-    bool isMobile = false,
-  }) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha : 0.05),
-              blurRadius: 20,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(16),
-            hoverColor: const Color(0xFFDC2626),
-            onTap: () {
-              // Add tap functionality here
-            },
-            child: Builder(
-              builder: (BuildContext context) {
-                bool isHovered = false;
-                return StatefulBuilder(
-                  builder: (context, setState) {
-                    return MouseRegion(
-                      onEnter: (_) => setState(() => isHovered = true),
-                      onExit: (_) => setState(() => isHovered = false),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: isHovered ? const Color(0xFFDC2626) : Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(isMobile ? 12 : 20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                icon,
-                                size: isMobile ? 20 : 35,
-                                color: isHovered 
-                                    ? Colors.black 
-                                    : Colors.black.withValues(alpha: 0.8),
-                              ),
-                              SizedBox(height: isMobile ? 8 : 20),
-                              Text(
-                                title,
-                                textAlign: TextAlign.center,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontSize: isMobile ? 10 : 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: isHovered ? Colors.white : Colors.black,
-                                  height: 1.2,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+  Widget _buildAdditionalContent({bool isMobile = false}) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 20),
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 800),
+          child: Column(
+            children: [
+              Text(
+                'At the Red Pen, our consultants, who have graduated from some of the world\'s most prestigious universities, are determined to help you apply to universities that align with your potential and aspirations.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontSize: isMobile ? 15 : 17,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black.withValues(alpha: 0.8),
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFDC2626),
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 24 : 32,
+                    vertical: isMobile ? 12 : 16,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  elevation: 2,
+                ),
+                child: Text(
+                  'Learn More',
+                  style: TextStyle(
+                    fontFamily: 'Cinzel',
+                    fontSize: isMobile ? 14 : 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildAdditionalContent({bool isMobile = false}) {
+  Widget _buildAdmissionsSection({
+    bool isMobile = false,
+    bool isTablet = false,
+  }) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
-        vertical: isMobile ? 30 : 10,
+        vertical: isMobile ? 50 : 70,
         horizontal: isMobile ? 16 : 20,
       ),
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 800),
-        margin: EdgeInsets.symmetric(horizontal: isMobile ? 0 : 20),
-        child: Column(
-          children: [
-            // Description text
-            Text(
-              'At the Red Pen, our consultants, who have graduated from some of the world\'s most prestigious universities, are determined to help you apply to universities that align with your potential and aspirations.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: isMobile ? 16 : 18,
-                fontWeight: FontWeight.w400,
-                color: Colors.black.withValues(alpha: 0.8),
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 24),
-            
-            // Learn More button
-            ElevatedButton(
-              onPressed: () {
-                // Add navigation logic here
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFDC2626), // Red color
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(
-                  horizontal: isMobile ? 20 : 24,
-                  vertical: isMobile ? 12 : 14,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                elevation: 0,
-              ),
-              child: Text(
-                'Learn More',
+      child: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 1200),
+          child: Column(
+            children: [
+              Text(
+                'Fall 2025 Admissions',
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: 'Cinzel',
-                  fontSize: isMobile ? 14 : 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
+                  fontFamily: 'Montserrat',
+                  fontSize: _getResponsiveFontSize(
+                    mobile: 24,
+                    tablet: 28,
+                    desktop: 32,
+                    isMobile: isMobile,
+                    isTablet: isTablet,
+                  ),
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black.withValues(alpha: 0.9),
+                  height: 1.2,
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+              const SizedBox(height: 16),
 
-  Widget _buildAdmissionsSection({bool isMobile = false, bool isTablet = false}) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        vertical: isMobile ? 60 : 80,
-        horizontal: isMobile ? 16 : 20,
-      ),
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 1200),
-        child: Column(
-          children: [
-            // Fall 2025 Admissions
-            Text(
-              'Fall 2025 Admissions',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: isMobile ? 24 : isTablet ? 28 : 32,
-                fontWeight: FontWeight.w600,
-                color: Colors.black.withValues(alpha: 0.9),
-                height: 1.2,
+              Text(
+                'We have admissions to the world\'s most prestigious universities and programmes',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontSize: _getResponsiveFontSize(
+                    mobile: 15,
+                    tablet: 17,
+                    desktop: 19,
+                    isMobile: isMobile,
+                    isTablet: isTablet,
+                  ),
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black.withValues(alpha: 0.7),
+                  height: 1.4,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            
-            // Subtitle
-            Text(
-              'We have admissions to the world\'s most prestigious universities and programmes',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Montserrat',
-                fontSize: isMobile ? 16 : isTablet ? 18 : 20,
-                fontWeight: FontWeight.w400,
-                color: Colors.black.withValues(alpha: 0.7),
-                height: 1.4,
-              ),
-            ),
-            const SizedBox(height: 50),
-            
-            // Admission Cards Grid
-            _buildAdmissionCards(isMobile: isMobile, isTablet: isTablet),
-          ],
+              const SizedBox(height: 40),
+
+              _buildAdmissionCards(isMobile: isMobile, isTablet: isTablet),
+            ],
+          ),
         ),
       ),
     );
@@ -546,101 +490,89 @@ class FindYourPathSection extends StatelessWidget {
       {
         'title': 'Our Undergraduate\nAdmissions for Fall 2025',
         'color': const Color(0xFF1a1a1a),
-        'image': 'undergraduate_placeholder',
       },
       {
-        'title': 'Our Postgraduate\nAdmissions for Fall 2025', 
+        'title': 'Our Postgraduate\nAdmissions for Fall 2025',
         'color': const Color(0xFF2d4a87),
-        'image': 'postgraduate_placeholder',
       },
       {
         'title': 'Our MBA\nAdmissions for Fall 2025',
         'color': const Color(0xFF4a2d87),
-        'image': 'mba_placeholder',
       },
       {
         'title': 'Our Boarding School\nAdmissions for Fall 2025',
         'color': const Color(0xFF8b2d2d),
-        'image': 'boarding_school_placeholder',
       },
     ];
 
     if (isMobile) {
-      // Mobile: 2x2 grid
-      return Container(
-        constraints: const BoxConstraints(maxWidth: 500),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _buildAdmissionCard(
-                      title: admissionData[0]['title'] as String,
-                      color: admissionData[0]['color'] as Color,
-                      isMobile: true,
-                    ),
+      return Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: _buildAdmissionCard(
+                    title: admissionData[0]['title'] as String,
+                    color: admissionData[0]['color'] as Color,
+                    isMobile: true,
                   ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _buildAdmissionCard(
-                      title: admissionData[1]['title'] as String,
-                      color: admissionData[1]['color'] as Color,
-                      isMobile: true,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _buildAdmissionCard(
-                      title: admissionData[2]['title'] as String,
-                      color: admissionData[2]['color'] as Color,
-                      isMobile: true,
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: _buildAdmissionCard(
-                      title: admissionData[3]['title'] as String,
-                      color: admissionData[3]['color'] as Color,
-                      isMobile: true,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    } else {
-      // Desktop/Tablet: 1x4 row
-      return Container(
-        constraints: const BoxConstraints(maxWidth: 1200),
-        child: Row(
-          children: admissionData.map((data) {
-            return Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: _buildAdmissionCard(
-                  title: data['title'] as String,
-                  color: data['color'] as Color,
-                  isMobile: false,
                 ),
               ),
-            );
-          }).toList(),
-        ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: _buildAdmissionCard(
+                    title: admissionData[1]['title'] as String,
+                    color: admissionData[1]['color'] as Color,
+                    isMobile: true,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: _buildAdmissionCard(
+                    title: admissionData[2]['title'] as String,
+                    color: admissionData[2]['color'] as Color,
+                    isMobile: true,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(6.0),
+                  child: _buildAdmissionCard(
+                    title: admissionData[3]['title'] as String,
+                    color: admissionData[3]['color'] as Color,
+                    isMobile: true,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    } else {
+      return Row(
+        children: admissionData.map((data) {
+          return Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _buildAdmissionCard(
+                title: data['title'] as String,
+                color: data['color'] as Color,
+                isMobile: false,
+              ),
+            ),
+          );
+        }).toList(),
       );
     }
   }
@@ -650,77 +582,206 @@ class FindYourPathSection extends StatelessWidget {
     required Color color,
     bool isMobile = false,
   }) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: () {
-          // Add navigation logic here
-        },
-        child: Container(
-          height: isMobile ? 200 : 280,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Stack(
-            children: [
-              // Background image placeholder
-              Positioned.fill(
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        color.withValues(alpha: 0.7),
-                        color,
-                      ],
-                    ),
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        height: isMobile ? 160 : 240,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.15),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [color.withValues(alpha: 0.8), color],
                   ),
                 ),
               ),
-              
-              // Content
-              Positioned(
-                bottom: 20,
-                left: 20,
-                right: 20,
+            ),
+
+            Positioned(
+              bottom: 16,
+              left: 16,
+              right: 16,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontFamily: 'Montserrat',
+                      fontSize: isMobile ? 12 : 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                      height: 1.3,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: 30,
+                    height: 3,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFDC2626),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  double _getResponsiveFontSize({
+    required double mobile,
+    required double tablet,
+    required double desktop,
+    required bool isMobile,
+    required bool isTablet,
+  }) {
+    if (isMobile) return mobile;
+    if (isTablet) return tablet;
+    return desktop;
+  }
+}
+
+// Separate StatefulWidget for service cards to handle hover properly
+class _ServiceCard extends StatefulWidget {
+  final IconData icon;
+  final String title;
+  final bool isMobile;
+
+  const _ServiceCard({
+    required this.icon,
+    required this.title,
+    this.isMobile = false,
+  });
+
+  @override
+  State<_ServiceCard> createState() => _ServiceCardState();
+}
+
+class _ServiceCardState extends State<_ServiceCard>
+    with SingleTickerProviderStateMixin {
+  bool _isHovered = false;
+  late AnimationController _animationController;
+  late Animation<Color?> _colorAnimation;
+  late Animation<Color?> _textColorAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+
+    _colorAnimation = ColorTween(
+      begin: Colors.white,
+      end: const Color(0xFFDC2626),
+    ).animate(_animationController);
+
+    _textColorAnimation = ColorTween(
+      begin: Colors.black,
+      end: Colors.white,
+    ).animate(_animationController);
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _handleHoverChange(bool isHovered) {
+    setState(() {
+      _isHovered = isHovered;
+    });
+
+    if (isHovered) {
+      _animationController.forward();
+    } else {
+      _animationController.reverse();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => _handleHoverChange(true),
+      onExit: (_) => _handleHoverChange(false),
+      cursor: SystemMouseCursors.click,
+      child: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          return GestureDetector(
+            onTap: () {},
+            child: Container(
+              decoration: BoxDecoration(
+                color: _colorAnimation.value,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(
+                      alpha: _isHovered ? 0.15 : 0.05,
+                    ),
+                    blurRadius: _isHovered ? 25 : 15,
+                    offset: Offset(0, _isHovered ? 8 : 4),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(widget.isMobile ? 16 : 24),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontSize: isMobile ? 14 : 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                        height: 1.3,
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      transform: Matrix4.identity()
+                        // ignore: deprecated_member_use
+                        ..scale(_isHovered ? 1.1 : 1.0),
+                      child: Icon(
+                        widget.icon,
+                        size: widget.isMobile ? 24 : 32,
+                        color: _textColorAnimation.value,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Container(
-                      width: 30,
-                      height: 3,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFDC2626),
-                        borderRadius: BorderRadius.circular(2),
+                    SizedBox(height: widget.isMobile ? 12 : 16),
+                    Text(
+                      widget.title,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontSize: widget.isMobile ? 11 : 14,
+                        fontWeight: FontWeight.w600,
+                        color: _textColorAnimation.value,
+                        height: 1.2,
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
