@@ -1,3 +1,4 @@
+import 'package:consultancy_website/form.dart';
 import 'package:consultancy_website/screens/shop.dart' show ShopPage;
 import 'package:consultancy_website/widgets/navitemsdropdown/events.dart';
 import 'package:consultancy_website/widgets/navitemsdropdown/newsroom.dart';
@@ -33,7 +34,7 @@ class MainApp extends StatelessWidget {
         '/events': (context) => const EventsPage(),
         '/newsroom': (context) => const Newsroom(),
         '/shop': (context) => const ShopPage(),
-        // '/consult': (context) => const ConsultPage(),
+        '/formscreen': (context) => const FormScreen(),
       },
 
       initialRoute: '/', // ✅ App starts with HomeScreen

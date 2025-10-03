@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:consultancy_website/form.dart' show FormScreen;
 import 'package:consultancy_website/widgets/navitemsdropdown/aboutdd.dart';
 import 'package:consultancy_website/widgets/navitemsdropdown/resourcesdd.dart';
 import 'package:consultancy_website/widgets/navitemsdropdown/servicesdd.dart';
@@ -474,7 +475,15 @@ class _CustomAppBarState extends State<CustomAppBar>
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: () => _navigateToPage('/consult'),
+                onTap: () {
+                   showDialog(
+        context: context,
+        barrierDismissible: true, // User can tap outside to close
+        builder: (BuildContext context) {
+          return const FormScreen();
+        },
+      );
+                },
                 borderRadius: BorderRadius.circular(30),
                 child: Padding(
                   padding: EdgeInsets.symmetric(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:consultancy_website/widgets/custom_app_bar.dart';
+import 'package:consultancy_website/custom_app_bar.dart';
 
 class ShopPage extends StatefulWidget {
   const ShopPage({super.key});

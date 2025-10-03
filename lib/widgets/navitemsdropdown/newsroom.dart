@@ -1,4 +1,4 @@
-import 'package:consultancy_website/widgets/custom_app_bar.dart';
+import 'package:consultancy_website/custom_app_bar.dart';
 import 'package:consultancy_website/widgets/footer_widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';

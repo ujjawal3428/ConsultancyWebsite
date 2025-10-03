@@ -2,13 +2,12 @@ import 'package:consultancy_website/widgets/footer_widget.dart' show FooterSecti
 import 'package:consultancy_website/widgets/sections/blogs.dart';
 import 'package:consultancy_website/widgets/sections/brands.dart';
 import 'package:consultancy_website/widgets/sections/findyourpath.dart';
+import 'package:consultancy_website/widgets/sections/hero_section.dart';
 import 'package:consultancy_website/widgets/sections/testimonials.dart';
 import 'package:consultancy_website/widgets/sections/whatwedo.dart';
 import 'package:consultancy_website/widgets/sections/whychooseus.dart';
 import 'package:flutter/material.dart';
-import '../widgets/custom_app_bar.dart';
-import '../widgets/hero_section.dart';
-
+import '../custom_app_bar.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
