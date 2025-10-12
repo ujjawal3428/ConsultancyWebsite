@@ -1,6 +1,6 @@
 name: consultancy_website
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -23,7 +23,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/founders.png
+    - assets/images/
 
   fonts:
     - family: Montserrat
@@ -40,7 +40,7 @@ flutter:
       fonts:
         - asset: assets/fonts/Fontspring-DEMO-theseasons-reg.otf
         - asset: assets/fonts/Fontspring-DEMO-theseasons-bd.otf
-          weight: 700     
+          weight: 700
 
     - family: Cinzel
       fonts:

@@ -13,18 +13,18 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
   late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-  
+
   String selectedCategory = 'All';
   String searchQuery = '';
   final ScrollController _scrollController = ScrollController();
-  
+
   final List<String> categories = [
     'All',
     'Boarding School',
     'Education Counselling',
     'Postgraduate',
     'Undergraduate Admissions',
-    'Undergraduate Preparation'
+    'Undergraduate Preparation',
   ];
 
   final List<Map<String, dynamic>> services = [
@@ -32,7 +32,8 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
       'title': 'Add on Essay 2024',
       'price': '₹35,000.00',
       'category': 'Postgraduate',
-      'description': 'Professional essay writing service for graduate applications',
+      'description':
+          'Professional essay writing service for graduate applications',
       'icon': Icons.edit_note_rounded,
       'color': const Color(0xFFE53E3E),
       'featured': false,
@@ -41,7 +42,8 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
       'title': 'Boarding School Consultation Service',
       'price': '₹35,000.00',
       'category': 'Boarding School',
-      'description': 'Comprehensive boarding school selection and application guidance',
+      'description':
+          'Comprehensive boarding school selection and application guidance',
       'icon': Icons.school_rounded,
       'color': const Color(0xFFD53F8C),
       'featured': true,
@@ -50,7 +52,8 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
       'title': 'College Application Review by Former Admissions Officers',
       'price': '₹37,000.00',
       'category': 'Undergraduate Admissions',
-      'description': 'Expert review of your college applications by industry professionals',
+      'description':
+          'Expert review of your college applications by industry professionals',
       'icon': Icons.account_balance_rounded,
       'color': const Color(0xFFE53E3E),
       'featured': true,
@@ -59,7 +62,8 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
       'title': 'Complete Statement of Purpose/Personal Statement Service',
       'price': '₹45,000.00',
       'category': 'Postgraduate',
-      'description': 'End-to-end SOP writing service for postgraduate applications',
+      'description':
+          'End-to-end SOP writing service for postgraduate applications',
       'icon': Icons.description_rounded,
       'color': const Color(0xFFC53030),
       'featured': false,
@@ -68,7 +72,8 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
       'title': 'Core Package 2024',
       'price': '₹90,000.00',
       'category': 'Postgraduate',
-      'description': 'Complete application support package for postgraduate studies',
+      'description':
+          'Complete application support package for postgraduate studies',
       'icon': Icons.workspace_premium_rounded,
       'color': const Color(0xFFE53E3E),
       'featured': true,
@@ -77,7 +82,8 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
       'title': 'Educational Counselling for College Students',
       'price': '₹20,000.00',
       'category': 'Education Counselling',
-      'description': 'Personalized counselling sessions for academic and career guidance',
+      'description':
+          'Personalized counselling sessions for academic and career guidance',
       'icon': Icons.psychology_rounded,
       'color': const Color(0xFFD53F8C),
       'featured': false,
@@ -113,19 +119,16 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
-    
+
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
     );
-    
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.easeOutBack,
-    ));
-    
+
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.easeOutBack),
+        );
+
     _fadeController.forward();
     _slideController.forward();
   }
@@ -140,14 +143,13 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
 
   List<Map<String, dynamic>> get filteredServices {
     return services.where((service) {
-      final matchesCategory = selectedCategory == 'All' || 
-                            service['category'] == selectedCategory;
-      final matchesSearch = service['title']
-          .toLowerCase()
-          .contains(searchQuery.toLowerCase()) ||
-          service['description']
-          .toLowerCase()
-          .contains(searchQuery.toLowerCase());
+      final matchesCategory =
+          selectedCategory == 'All' || service['category'] == selectedCategory;
+      final matchesSearch =
+          service['title'].toLowerCase().contains(searchQuery.toLowerCase()) ||
+          service['description'].toLowerCase().contains(
+            searchQuery.toLowerCase(),
+          );
       return matchesCategory && matchesSearch;
     }).toList();
   }
@@ -177,7 +179,7 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
               ),
             ),
           ),
-          
+
           // Main content
           SingleChildScrollView(
             controller: _scrollController,
@@ -185,7 +187,7 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
             child: Column(
               children: [
                 const SizedBox(height: 100), // Space for app bar
-                
+
                 FadeTransition(
                   opacity: _fadeAnimation,
                   child: SlideTransition(
@@ -202,7 +204,11 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
                           const SizedBox(height: 40),
                           _buildFeaturedServices(isDesktop, isTablet),
                           const SizedBox(height: 50),
-                          _buildServicesGrid(crossAxisCount, isDesktop, isTablet),
+                          _buildServicesGrid(
+                            crossAxisCount,
+                            isDesktop,
+                            isTablet,
+                          ),
                           const SizedBox(height: 80),
                         ],
                       ),
@@ -212,7 +218,7 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
               ],
             ),
           ),
-          
+
           // Custom App Bar
           const CustomAppBar(),
         ],
@@ -278,7 +284,9 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
       children: [
         // Search Bar
         Container(
-          constraints: BoxConstraints(maxWidth: isDesktop ? 600 : double.infinity),
+          constraints: BoxConstraints(
+            maxWidth: isDesktop ? 600 : double.infinity,
+          ),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
@@ -322,9 +330,9 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
             ),
           ),
         ),
-        
+
         const SizedBox(height: 30),
-        
+
         // Category Filters
         SizedBox(
           height: 50,
@@ -335,7 +343,7 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
             itemBuilder: (context, index) {
               final category = categories[index];
               final isSelected = selectedCategory == category;
-              
+
               return Padding(
                 padding: EdgeInsets.only(
                   right: 12,
@@ -357,20 +365,25 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
                         decoration: BoxDecoration(
                           gradient: isSelected
                               ? const LinearGradient(
-                                  colors: [Color(0xFFE53E3E), Color(0xFFC53030)],
+                                  colors: [
+                                    Color(0xFFE53E3E),
+                                    Color(0xFFC53030),
+                                  ],
                                 )
                               : null,
                           color: isSelected ? null : Colors.white,
                           borderRadius: BorderRadius.circular(25),
                           border: Border.all(
-                            color: isSelected 
-                                ? Colors.transparent 
+                            color: isSelected
+                                ? Colors.transparent
                                 : Colors.grey.withValues(alpha: 0.3),
                           ),
                           boxShadow: [
                             BoxShadow(
                               color: isSelected
-                                  ? const Color(0xFFE53E3E).withValues(alpha: 0.3)
+                                  ? const Color(
+                                      0xFFE53E3E,
+                                    ).withValues(alpha: 0.3)
                                   : Colors.black.withValues(alpha: 0.05),
                               offset: const Offset(0, 2),
                               blurRadius: isSelected ? 8 : 4,
@@ -383,7 +396,9 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
                             fontFamily: 'Montserrat',
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: isSelected ? Colors.white : const Color(0xFF374151),
+                            color: isSelected
+                                ? Colors.white
+                                : const Color(0xFF374151),
                           ),
                         ),
                       ),
@@ -399,10 +414,12 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
   }
 
   Widget _buildFeaturedServices(bool isDesktop, bool isTablet) {
-    final featuredServices = services.where((service) => service['featured']).toList();
-    
+    final featuredServices = services
+        .where((service) => service['featured'])
+        .toList();
+
     if (featuredServices.isEmpty) return const SizedBox();
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -425,10 +442,7 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
             itemBuilder: (context, index) {
               final service = featuredServices[index];
               return Padding(
-                padding: EdgeInsets.only(
-                  right: 16,
-                  left: index == 0 ? 0 : 0,
-                ),
+                padding: EdgeInsets.only(right: 16, left: index == 0 ? 0 : 0),
                 child: _buildFeaturedServiceCard(service, isDesktop, isTablet),
               );
             },
@@ -438,7 +452,11 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildFeaturedServiceCard(Map<String, dynamic> service, bool isDesktop, bool isTablet) {
+  Widget _buildFeaturedServiceCard(
+    Map<String, dynamic> service,
+    bool isDesktop,
+    bool isTablet,
+  ) {
     return Container(
       width: isDesktop ? 400 : (isTablet ? 350 : 300),
       decoration: BoxDecoration(
@@ -564,7 +582,7 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
 
   Widget _buildServicesGrid(int crossAxisCount, bool isDesktop, bool isTablet) {
     final filtered = filteredServices;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -596,7 +614,11 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildServiceCard(Map<String, dynamic> service, bool isDesktop, bool isTablet) {
+  Widget _buildServiceCard(
+    Map<String, dynamic> service,
+    bool isDesktop,
+    bool isTablet,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -659,7 +681,10 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
                 ),
                 const SizedBox(height: 16),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.grey.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
@@ -737,7 +762,10 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
                       ),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [service['color'], service['color'].withValues(alpha: 0.8)],
+                          colors: [
+                            service['color'],
+                            service['color'].withValues(alpha: 0.8),
+                          ],
                         ),
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -790,15 +818,14 @@ class _ShopPageState extends State<ShopPage> with TickerProviderStateMixin {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [service['color'], service['color'].withValues(alpha: 0.8)],
+                        colors: [
+                          service['color'],
+                          service['color'].withValues(alpha: 0.8),
+                        ],
                       ),
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    child: Icon(
-                      service['icon'],
-                      color: Colors.white,
-                      size: 32,
-                    ),
+                    child: Icon(service['icon'], color: Colors.white, size: 32),
                   ),
                   const SizedBox(height: 24),
                   Text(
