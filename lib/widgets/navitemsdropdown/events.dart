@@ -6,10 +6,10 @@ class EventsPage extends StatefulWidget {
   const EventsPage({super.key});
 
   @override
-  _EventsPageState createState() => _EventsPageState();
+  EventsPageState createState() => EventsPageState();
 }
 
-class _EventsPageState extends State<EventsPage> {
+class EventsPageState extends State<EventsPage> {
   int _selectedCategoryIndex = 0;
   final List<String> _categories = ['All Events', 'Upcoming', 'Past Events'];
   final List<IconData> _categoryIcons = [
@@ -25,17 +25,14 @@ class _EventsPageState extends State<EventsPage> {
       body: CustomScrollView(
         slivers: [
           // App Bar
-          SliverToBoxAdapter(
-            child: CustomAppBar(),
-          ),
-          
-          
+          SliverToBoxAdapter(child: CustomAppBar()),
+
           // Main Content
           SliverFillRemaining(
             child: LayoutBuilder(
               builder: (context, constraints) {
                 bool isMobile = constraints.maxWidth < 768;
-                
+
                 if (isMobile) {
                   return Column(
                     children: [
@@ -56,17 +53,13 @@ class _EventsPageState extends State<EventsPage> {
               },
             ),
           ),
-          
+
           // Footer
-          SliverToBoxAdapter(
-            child: FooterSection(),
-          ),
+          SliverToBoxAdapter(child: FooterSection()),
         ],
       ),
     );
   }
-
-  
 
   Widget _buildSidebarCategories() {
     return Container(
@@ -106,7 +99,7 @@ class _EventsPageState extends State<EventsPage> {
 
   Widget _buildCategoryItem(int index, bool isMobile) {
     bool isSelected = _selectedCategoryIndex == index;
-    
+
     if (isMobile) {
       return Container(
         margin: const EdgeInsets.only(right: 12),
@@ -136,12 +129,14 @@ class _EventsPageState extends State<EventsPage> {
         ),
       );
     }
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        color: isSelected ? Colors.red.withValues(alpha : 0.1) : Colors.transparent,
+        color: isSelected
+            ? Colors.red.withValues(alpha: 0.1)
+            : Colors.transparent,
       ),
       child: Material(
         color: Colors.transparent,
@@ -173,8 +168,12 @@ class _EventsPageState extends State<EventsPage> {
                         _categories[index],
                         style: TextStyle(
                           fontSize: 14,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                          color: isSelected ? Colors.red : const Color(0xFF1A1A1A),
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w500,
+                          color: isSelected
+                              ? Colors.red
+                              : const Color(0xFF1A1A1A),
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -226,7 +225,7 @@ class _EventsPageState extends State<EventsPage> {
 
   Widget _buildEventsContent() {
     List<EventModel> events = _getEventsForCategory(_selectedCategoryIndex);
-    
+
     return Container(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -242,7 +241,7 @@ class _EventsPageState extends State<EventsPage> {
 
   Widget _buildContentHeader() {
     List<EventModel> events = _getEventsForCategory(_selectedCategoryIndex);
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -260,17 +259,14 @@ class _EventsPageState extends State<EventsPage> {
             const SizedBox(height: 4),
             Text(
               '${events.length} ${events.length == 1 ? 'event' : 'events'} found',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
             ),
           ],
         ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: Colors.red.withValues(alpha : 0.1),
+            color: Colors.red.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
@@ -335,10 +331,7 @@ class _EventsPageState extends State<EventsPage> {
             const SizedBox(height: 8),
             Text(
               'Check back later for updates',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade500,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
             ),
           ],
         ),
@@ -347,9 +340,12 @@ class _EventsPageState extends State<EventsPage> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        int crossAxisCount = constraints.maxWidth > 900 ? 3 : 
-                            constraints.maxWidth > 600 ? 2 : 1;
-        
+        int crossAxisCount = constraints.maxWidth > 900
+            ? 3
+            : constraints.maxWidth > 600
+            ? 2
+            : 1;
+
         return GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: crossAxisCount,
@@ -370,7 +366,7 @@ class _EventsPageState extends State<EventsPage> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha : 0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 20,
             offset: const Offset(0, 4),
           ),
@@ -379,9 +375,7 @@ class _EventsPageState extends State<EventsPage> {
       child: Card(
         elevation: 0,
         margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () => _showEventDetails(event),
@@ -394,7 +388,9 @@ class _EventsPageState extends State<EventsPage> {
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(16),
+                    ),
                     image: DecorationImage(
                       image: NetworkImage(event.imageUrl),
                       fit: BoxFit.cover,
@@ -405,13 +401,15 @@ class _EventsPageState extends State<EventsPage> {
                       // Gradient overlay
                       Container(
                         decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(16),
+                          ),
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
                               Colors.transparent,
-                              Colors.black.withValues(alpha : 0.1),
+                              Colors.black.withValues(alpha: 0.1),
                             ],
                           ),
                         ),
@@ -421,13 +419,18 @@ class _EventsPageState extends State<EventsPage> {
                         top: 12,
                         right: 12,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
                           decoration: BoxDecoration(
-                            color: event.isPast ? Colors.grey.shade600 : Colors.red,
+                            color: event.isPast
+                                ? Colors.grey.shade600
+                                : Colors.red,
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha : 0.2),
+                                color: Colors.black.withValues(alpha: 0.2),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
@@ -455,7 +458,7 @@ class _EventsPageState extends State<EventsPage> {
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha : 0.15),
+                                color: Colors.black.withValues(alpha: 0.15),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
@@ -489,7 +492,7 @@ class _EventsPageState extends State<EventsPage> {
                   ),
                 ),
               ),
-              
+
               // Event Details
               Expanded(
                 flex: 2,
@@ -510,7 +513,7 @@ class _EventsPageState extends State<EventsPage> {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 8),
-                      
+
                       Row(
                         children: [
                           Icon(Icons.location_on, color: Colors.red, size: 14),
@@ -528,9 +531,9 @@ class _EventsPageState extends State<EventsPage> {
                           ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 6),
-                      
+
                       Row(
                         children: [
                           Icon(Icons.access_time, color: Colors.red, size: 14),
@@ -548,17 +551,23 @@ class _EventsPageState extends State<EventsPage> {
                           ),
                         ],
                       ),
-                      
+
                       const Spacer(),
-                      
+
                       SizedBox(
                         width: double.infinity,
                         height: 32,
                         child: ElevatedButton(
-                          onPressed: event.isPast ? null : () => _showEventDetails(event),
+                          onPressed: event.isPast
+                              ? null
+                              : () => _showEventDetails(event),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: event.isPast ? Colors.grey.shade100 : Colors.red,
-                            foregroundColor: event.isPast ? Colors.grey.shade500 : Colors.white,
+                            backgroundColor: event.isPast
+                                ? Colors.grey.shade100
+                                : Colors.red,
+                            foregroundColor: event.isPast
+                                ? Colors.grey.shade500
+                                : Colors.white,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -613,7 +622,7 @@ class _EventsPageState extends State<EventsPage> {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          
+
           Expanded(
             child: SingleChildScrollView(
               child: Column(
@@ -627,7 +636,7 @@ class _EventsPageState extends State<EventsPage> {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha : 0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 20,
                           offset: const Offset(0, 6),
                         ),
@@ -638,7 +647,7 @@ class _EventsPageState extends State<EventsPage> {
                       ),
                     ),
                   ),
-                  
+
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Column(
@@ -654,7 +663,7 @@ class _EventsPageState extends State<EventsPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        
+
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
@@ -672,10 +681,14 @@ class _EventsPageState extends State<EventsPage> {
                                   Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: Colors.red.withValues(alpha : 0.1),
+                                      color: Colors.red.withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    child: const Icon(Icons.location_on, color: Colors.red, size: 20),
+                                    child: const Icon(
+                                      Icons.location_on,
+                                      color: Colors.red,
+                                      size: 20,
+                                    ),
                                   ),
                                   const SizedBox(width: 12),
                                   Expanded(
@@ -696,10 +709,14 @@ class _EventsPageState extends State<EventsPage> {
                                   Container(
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
-                                      color: Colors.red.withValues(alpha : 0.1),
+                                      color: Colors.red.withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
-                                    child: const Icon(Icons.access_time, color: Colors.red, size: 20),
+                                    child: const Icon(
+                                      Icons.access_time,
+                                      color: Colors.red,
+                                      size: 20,
+                                    ),
                                   ),
                                   const SizedBox(width: 12),
                                   Expanded(
@@ -717,7 +734,7 @@ class _EventsPageState extends State<EventsPage> {
                             ],
                           ),
                         ),
-                        
+
                         const SizedBox(height: 24),
                         const Text(
                           'About Event',
@@ -736,7 +753,7 @@ class _EventsPageState extends State<EventsPage> {
                             height: 1.6,
                           ),
                         ),
-                        
+
                         const SizedBox(height: 32),
                         if (!event.isPast)
                           SizedBox(
@@ -749,9 +766,14 @@ class _EventsPageState extends State<EventsPage> {
                                   SnackBar(
                                     content: Row(
                                       children: [
-                                        const Icon(Icons.check_circle, color: Colors.white),
+                                        const Icon(
+                                          Icons.check_circle,
+                                          color: Colors.white,
+                                        ),
                                         const SizedBox(width: 8),
-                                        Text('Registration for ${event.title} initiated!'),
+                                        Text(
+                                          'Registration for ${event.title} initiated!',
+                                        ),
                                       ],
                                     ),
                                     backgroundColor: Colors.red,
@@ -806,9 +828,11 @@ class _EventsPageState extends State<EventsPage> {
         time: '9:00 AM - 6:00 PM',
         day: '15',
         month: 'DEC',
-        description: 'Join industry leaders and innovators for a day of inspiring talks, networking, and showcasing the latest technological breakthroughs. This summit will feature keynote speakers from Fortune 500 companies, startup showcases, and interactive workshops on emerging technologies.',
+        description:
+            'Join industry leaders and innovators for a day of inspiring talks, networking, and showcasing the latest technological breakthroughs. This summit will feature keynote speakers from Fortune 500 companies, startup showcases, and interactive workshops on emerging technologies.',
         isPast: false,
-        imageUrl: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop',
+        imageUrl:
+            'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop',
       ),
       EventModel(
         title: 'Winter Music Festival',
@@ -817,9 +841,11 @@ class _EventsPageState extends State<EventsPage> {
         time: '6:00 PM - 11:00 PM',
         day: '22',
         month: 'DEC',
-        description: 'A magical evening of live music performances featuring local and international artists in a winter wonderland setting. Experience diverse musical genres from jazz to electronic, with food trucks, art installations, and a spectacular light show.',
+        description:
+            'A magical evening of live music performances featuring local and international artists in a winter wonderland setting. Experience diverse musical genres from jazz to electronic, with food trucks, art installations, and a spectacular light show.',
         isPast: false,
-        imageUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=600&fit=crop',
+        imageUrl:
+            'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=600&fit=crop',
       ),
     ];
   }
@@ -833,9 +859,11 @@ class _EventsPageState extends State<EventsPage> {
         time: '2:00 PM - 8:00 PM',
         day: '15',
         month: 'OCT',
-        description: 'A stunning collection of contemporary artworks by emerging and established artists, celebrating the beauty of autumn through various mediums. The exhibition featured over 50 pieces including paintings, sculptures, and digital art installations.',
+        description:
+            'A stunning collection of contemporary artworks by emerging and established artists, celebrating the beauty of autumn through various mediums. The exhibition featured over 50 pieces including paintings, sculptures, and digital art installations.',
         isPast: true,
-        imageUrl: 'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=600&fit=crop',
+        imageUrl:
+            'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800&h=600&fit=crop',
       ),
       EventModel(
         title: 'Business Networking Mixer',
@@ -844,9 +872,11 @@ class _EventsPageState extends State<EventsPage> {
         time: '7:00 PM - 10:00 PM',
         day: '08',
         month: 'NOV',
-        description: 'An exclusive networking event connecting entrepreneurs, professionals, and industry experts in a sophisticated rooftop setting. The event included panel discussions, one-on-one networking sessions, and premium dining experiences.',
+        description:
+            'An exclusive networking event connecting entrepreneurs, professionals, and industry experts in a sophisticated rooftop setting. The event included panel discussions, one-on-one networking sessions, and premium dining experiences.',
         isPast: true,
-        imageUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&h=600&fit=crop',
+        imageUrl:
+            'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&h=600&fit=crop',
       ),
     ];
   }

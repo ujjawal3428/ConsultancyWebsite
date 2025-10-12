@@ -18,15 +18,15 @@ class _CustomAppBarState extends State<CustomAppBar>
   late AnimationController _slideController;
   late Animation<Offset> _slideAnimation;
   final bool _isScrolled = false;
-  
+
   // Overlay controllers for dropdown menus
   OverlayEntry? _overlayEntry;
   String? _activeDropdown;
   String? _hoveredItem;
-  
+
   // Timer for delayed closing - increased delay to prevent flicker
   Timer? _closeTimer;
-  
+
   // Add a flag to prevent rapid state changes
   bool _isTransitioning = false;
 
@@ -37,14 +37,11 @@ class _CustomAppBarState extends State<CustomAppBar>
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0.0, -1.0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.elasticOut,
-    ));
-    
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0.0, -1.0), end: Offset.zero).animate(
+          CurvedAnimation(parent: _slideController, curve: Curves.elasticOut),
+        );
+
     _slideController.forward();
   }
 
@@ -58,7 +55,7 @@ class _CustomAppBarState extends State<CustomAppBar>
 
   void _removeOverlay() {
     if (_isTransitioning) return; // Prevent multiple calls
-    
+
     _closeTimer?.cancel();
     _overlayEntry?.remove();
     _overlayEntry = null;
@@ -84,30 +81,31 @@ class _CustomAppBarState extends State<CustomAppBar>
 
   void _showDropdownMenu(String menuType, GlobalKey buttonKey) {
     if (_isTransitioning) return; // Prevent rapid transitions
-    
+
     _cancelClose();
-    
+
     // If the same dropdown is already open, don't recreate it
     if (_activeDropdown == menuType && _overlayEntry != null) {
       return;
     }
-    
+
     _isTransitioning = true;
     _removeOverlay();
-    
+
     // Add a small delay before showing new dropdown to prevent flicker
     Future.delayed(const Duration(milliseconds: 50), () {
       if (!mounted) return;
-      
-      final RenderBox? renderBox = buttonKey.currentContext?.findRenderObject() as RenderBox?;
+
+      final RenderBox? renderBox =
+          buttonKey.currentContext?.findRenderObject() as RenderBox?;
       if (renderBox == null) {
         _isTransitioning = false;
         return;
       }
-      
+
       final position = renderBox.localToGlobal(Offset.zero);
       final size = renderBox.size;
-      
+
       _overlayEntry = OverlayEntry(
         builder: (context) => Stack(
           children: [
@@ -147,7 +145,9 @@ class _CustomAppBarState extends State<CustomAppBar>
                   shadowColor: Colors.black.withValues(alpha: 0.1),
                   child: Container(
                     constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width > 768 ? 400 : 300,
+                      maxWidth: MediaQuery.of(context).size.width > 768
+                          ? 400
+                          : 300,
                       maxHeight: 500,
                     ),
                     decoration: BoxDecoration(
@@ -166,14 +166,14 @@ class _CustomAppBarState extends State<CustomAppBar>
           ],
         ),
       );
-      
+
       if (mounted) {
         Overlay.of(context).insert(_overlayEntry!);
         setState(() {
           _activeDropdown = menuType;
         });
       }
-      
+
       _isTransitioning = false;
     });
   }
@@ -195,7 +195,7 @@ class _CustomAppBarState extends State<CustomAppBar>
   void _navigateToPage(String pageRoute) {
     // Close any open dropdowns first
     _removeOverlay();
-    
+
     // Navigate to the specified route
     Navigator.pushNamed(context, pageRoute);
   }
@@ -207,48 +207,52 @@ class _CustomAppBarState extends State<CustomAppBar>
     final isTablet = screenWidth > 768 && screenWidth <= 1024;
     final isMobile = screenWidth <= 768;
 
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      child: SlideTransition(
-        position: _slideAnimation,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: _isScrolled
-                ? [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
-                      offset: const Offset(0, 2),
-                      blurRadius: 12,
-                    )
-                  ]
-                : [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.05),
-                      offset: const Offset(0, 1),
-                      blurRadius: 4,
-                    )
+    // The Stack widget is the new parent for Positioned
+    return Stack(
+      children: [
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: SlideTransition(
+            position: _slideAnimation,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: _isScrolled
+                    ? [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.08),
+                          offset: const Offset(0, 2),
+                          blurRadius: 12,
+                        ),
+                      ]
+                    : [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          offset: const Offset(0, 1),
+                          blurRadius: 4,
+                        ),
+                      ],
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isDesktop ? 32 : (isTablet ? 24 : 16),
+                  vertical: isDesktop ? 18 : 15,
+                ),
+                child: Row(
+                  children: [
+                    _buildLogo(isDesktop, isTablet),
+                    const Spacer(),
+                    if (!isMobile) _buildDesktopNavigation(isDesktop),
+                    if (isMobile) _buildMobileMenuButton(),
                   ],
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: isDesktop ? 32 : (isTablet ? 24 : 16),
-              vertical: isDesktop ? 18 : 15,
-            ),
-            child: Row(
-              children: [
-                _buildLogo(isDesktop, isTablet),
-                const Spacer(),
-                
-                if (!isMobile) _buildDesktopNavigation(isDesktop),
-                if (isMobile) _buildMobileMenuButton(),
-              ],
+                ),
+              ),
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 
@@ -339,19 +343,26 @@ class _CustomAppBarState extends State<CustomAppBar>
 
     return Row(
       children: [
-        ...menuItems.map((item) => _buildNavItem(
-              item['title'] as String,
-              item['hasDropdown'] as bool,
-              item['route'] as String?,
-              isDesktop,
-            )),
+        ...menuItems.map(
+          (item) => _buildNavItem(
+            item['title'] as String,
+            item['hasDropdown'] as bool,
+            item['route'] as String?,
+            isDesktop,
+          ),
+        ),
         SizedBox(width: isDesktop ? 24 : 16),
         _buildConsultButton(isDesktop),
       ],
     );
   }
 
-  Widget _buildNavItem(String title, bool hasDropdown, String? route, bool isDesktop) {
+  Widget _buildNavItem(
+    String title,
+    bool hasDropdown,
+    String? route,
+    bool isDesktop,
+  ) {
     final GlobalKey buttonKey = GlobalKey();
     final isActive = _activeDropdown == title;
     final isHovered = _hoveredItem == title;
@@ -401,7 +412,9 @@ class _CustomAppBarState extends State<CustomAppBar>
             },
             borderRadius: BorderRadius.circular(8),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 150), // Reduced animation duration
+              duration: const Duration(
+                milliseconds: 150,
+              ), // Reduced animation duration
               padding: EdgeInsets.symmetric(
                 vertical: 12,
                 horizontal: isDesktop ? 16 : 12,
@@ -430,7 +443,9 @@ class _CustomAppBarState extends State<CustomAppBar>
                     const SizedBox(width: 4),
                     AnimatedRotation(
                       turns: isActive ? 0.5 : 0,
-                      duration: const Duration(milliseconds: 150), // Reduced animation duration
+                      duration: const Duration(
+                        milliseconds: 150,
+                      ), // Reduced animation duration
                       child: Icon(
                         Icons.keyboard_arrow_down,
                         size: 18,
@@ -476,13 +491,13 @@ class _CustomAppBarState extends State<CustomAppBar>
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                   showDialog(
-        context: context,
-        barrierDismissible: true, // User can tap outside to close
-        builder: (BuildContext context) {
-          return const FormScreen();
-        },
-      );
+                  showDialog(
+                    context: context,
+                    barrierDismissible: true, // User can tap outside to close
+                    builder: (BuildContext context) {
+                      return const FormScreen();
+                    },
+                  );
                 },
                 borderRadius: BorderRadius.circular(30),
                 child: Padding(
@@ -568,12 +583,42 @@ class _CustomAppBarState extends State<CustomAppBar>
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    _buildMobileMenuItem('About Us', Icons.info_outline, true, null),
-                    _buildMobileMenuItem('Services', Icons.work_outline, true, null),
-                    _buildMobileMenuItem('Resources', Icons.library_books_outlined, true, null),
-                    _buildMobileMenuItem('Events', Icons.event_outlined, false, '/events'),
-                    _buildMobileMenuItem('Newsroom', Icons.newspaper_outlined, false, '/newsroom'),
-                    _buildMobileMenuItem('Shop', Icons.shopping_bag_outlined, false, '/shop'),
+                    _buildMobileMenuItem(
+                      'About Us',
+                      Icons.info_outline,
+                      true,
+                      null,
+                    ),
+                    _buildMobileMenuItem(
+                      'Services',
+                      Icons.work_outline,
+                      true,
+                      null,
+                    ),
+                    _buildMobileMenuItem(
+                      'Resources',
+                      Icons.library_books_outlined,
+                      true,
+                      null,
+                    ),
+                    _buildMobileMenuItem(
+                      'Events',
+                      Icons.event_outlined,
+                      false,
+                      '/events',
+                    ),
+                    _buildMobileMenuItem(
+                      'Newsroom',
+                      Icons.newspaper_outlined,
+                      false,
+                      '/newsroom',
+                    ),
+                    _buildMobileMenuItem(
+                      'Shop',
+                      Icons.shopping_bag_outlined,
+                      false,
+                      '/shop',
+                    ),
                   ],
                 ),
               ),
@@ -588,13 +633,14 @@ class _CustomAppBarState extends State<CustomAppBar>
     );
   }
 
-  Widget _buildMobileMenuItem(String title, IconData icon, bool hasSubMenu, String? route) {
+  Widget _buildMobileMenuItem(
+    String title,
+    IconData icon,
+    bool hasSubMenu,
+    String? route,
+  ) {
     return ExpansionTile(
-      leading: Icon(
-        icon,
-        color: const Color(0xFFE53E3E),
-        size: 24,
-      ),
+      leading: Icon(icon, color: const Color(0xFFE53E3E), size: 24),
       title: Text(
         title,
         style: const TextStyle(
@@ -604,14 +650,16 @@ class _CustomAppBarState extends State<CustomAppBar>
           color: Color(0xFF374151),
         ),
       ),
-      onExpansionChanged: !hasSubMenu ? (expanded) {
-        if (!expanded && route != null) {
-          Navigator.pop(context); // Close the bottom sheet
-          _navigateToPage(route); // Navigate to the page
-        }
-      } : null,
-      trailing: hasSubMenu 
-          ? const Icon(Icons.expand_more) 
+      onExpansionChanged: !hasSubMenu
+          ? (expanded) {
+              if (!expanded && route != null) {
+                Navigator.pop(context); // Close the bottom sheet
+                _navigateToPage(route); // Navigate to the page
+              }
+            }
+          : null,
+      trailing: hasSubMenu
+          ? const Icon(Icons.expand_more)
           : const Icon(Icons.arrow_forward_ios, size: 16),
       children: hasSubMenu ? _buildMobileSubMenu(title) : [],
     );

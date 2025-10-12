@@ -65,7 +65,9 @@ class FooterSection extends StatelessWidget {
                     // Partnership Badge
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFF1E3A8A),
                         borderRadius: BorderRadius.circular(4),
@@ -128,22 +130,13 @@ class FooterSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Menu Section
-        Expanded(
-          flex: 2,
-          child: _buildMenuSection(),
-        ),
+        Expanded(flex: 2, child: _buildMenuSection()),
         const SizedBox(width: 60),
         // Services Section
-        Expanded(
-          flex: 3,
-          child: _buildServicesSection(),
-        ),
+        Expanded(flex: 3, child: _buildServicesSection()),
         const SizedBox(width: 60),
         // Resources Section
-        Expanded(
-          flex: 2,
-          child: _buildResourcesSection(),
-        ),
+        Expanded(flex: 2, child: _buildResourcesSection()),
       ],
     );
   }
@@ -231,16 +224,15 @@ class FooterSection extends StatelessWidget {
         _buildFooterLink('Work with us'),
         const SizedBox(height: 25),
         // Social Media Icons
-        Row(
+        Wrap(
+          // ✅ USE A WRAP WIDGET INSTEAD OF A ROW
+          spacing: 15, // Horizontal space between icons
+          runSpacing: 15, // Vertical space if icons wrap to a new line
           children: [
             _buildSocialIcon(Icons.camera_alt, 'Instagram'),
-            const SizedBox(width: 15),
             _buildSocialIcon(Icons.business, 'LinkedIn'),
-            const SizedBox(width: 15),
             _buildSocialIcon(Icons.play_arrow, 'YouTube'),
-            const SizedBox(width: 15),
             _buildSocialIcon(Icons.chat, 'WhatsApp'),
-            const SizedBox(width: 15),
             _buildSocialIcon(Icons.phone, 'Phone'),
           ],
         ),
@@ -283,11 +275,7 @@ class FooterSection extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: Colors.white70),
         ),
-        child: Icon(
-          icon,
-          size: 18,
-          color: Colors.white70,
-        ),
+        child: Icon(icon, size: 18, color: Colors.white70),
       ),
     );
   }
