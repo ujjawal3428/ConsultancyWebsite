@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "922380089887",
+    "project_id": "iqadmitconsultancyservice",
+    "storage_bucket": "iqadmitconsultancyservice.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922380089887:android:714cc6d97c595d8068b32a",
+        "android_client_info": {
+          "package_name": "com.example.consultancy_website"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCulDJu8dhXF8WmwZIQYza0wt3ozktuSjo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

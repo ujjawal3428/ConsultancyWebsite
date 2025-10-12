@@ -1,0 +1,39 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "iqadmitconsultancyservice",
+          "appId": "1:922380089887:android:714cc6d97c595d8068b32a",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "iqadmitconsultancyservice",
+          "configurations": {
+            "android": "1:922380089887:android:714cc6d97c595d8068b32a",
+            "ios": "1:922380089887:ios:7805a32951bb6b0b68b32a",
+            "macos": "1:922380089887:ios:7805a32951bb6b0b68b32a",
+            "web": "1:922380089887:web:f9ab83b278b419ac68b32a",
+            "windows": "1:922380089887:web:87499f97bf25c67c68b32a"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
