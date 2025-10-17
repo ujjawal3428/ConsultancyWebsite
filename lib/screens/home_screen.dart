@@ -2,6 +2,7 @@ import 'package:consultancy_website/widgets/footer_widget.dart'
     show FooterSection;
 import 'package:consultancy_website/widgets/sections/blogs.dart';
 import 'package:consultancy_website/widgets/sections/brands.dart';
+import 'package:consultancy_website/widgets/sections/browsesection.dart';
 import 'package:consultancy_website/widgets/sections/findyourpath.dart';
 import 'package:consultancy_website/widgets/sections/hero_section.dart';
 import 'package:consultancy_website/widgets/sections/testimonials.dart';
@@ -55,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 children: [
                   SizedBox(height: 80), // Add space for the AppBar
                   HeroSection(),
+                  BrowseCoursesSection(),
                   FindYourPathSection(),
                   BrandsSection(),
                   WhyChooseUsSection(),
