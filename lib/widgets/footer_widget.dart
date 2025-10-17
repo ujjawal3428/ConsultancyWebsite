@@ -14,25 +14,29 @@ class FooterSection extends StatelessWidget {
       child: Column(
         children: [
           // Main Footer Content
-          Container(
-            constraints: const BoxConstraints(maxWidth: 1200),
-            padding: EdgeInsets.symmetric(
-              horizontal: isDesktop ? 60 : (isTablet ? 40 : 20),
-              vertical: isDesktop ? 60 : 40,
+          Align(
+            alignment: isDesktop ? Alignment.center : Alignment.centerLeft,
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 1200),
+              padding: EdgeInsets.symmetric(
+                horizontal: isDesktop ? 60 : (isTablet ? 40 : 20),
+                vertical: isDesktop ? 60 : 40,
+              ),
+              child: isDesktop
+                  ? _buildDesktopLayout(context)
+                  : _buildMobileLayout(context),
             ),
-            child: isDesktop
-                ? _buildDesktopLayout(context)
-                : _buildMobileLayout(context),
           ),
           // Bottom Section with Logo and Copyright
           Container(
             color: Colors.black,
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
             child: Column(
+              crossAxisAlignment: isDesktop ? CrossAxisAlignment.center : CrossAxisAlignment.start,
               children: [
                 // Logo Section
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: isDesktop ? MainAxisAlignment.center : MainAxisAlignment.start,
                   children: [
                     // Main Logo
                     RichText(
@@ -86,36 +90,37 @@ class FooterSection extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                const Text(
+                Text(
                   'In partnership with',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 10,
                     color: Colors.white70,
                   ),
+                  textAlign: isDesktop ? TextAlign.center : TextAlign.left,
                 ),
                 const SizedBox(height: 30),
                 // Company Info
-                const Text(
+                Text(
                   'Bale Education Country Pvt. Ltd. | ©The IQAdmit | 2025',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 14,
                     color: Colors.white70,
                   ),
-                  textAlign: TextAlign.center,
+                  textAlign: isDesktop ? TextAlign.center : TextAlign.left,
                 ),
                 const SizedBox(height: 15),
                 // Address
-                const Text(
+                Text(
                   'Corporate Office: Apartment #2828, Secret Wars, Junwani Road, Beti Road West, Maore Villa,\n Bhilai, 490001, Chhattisgarh | Number: +91 98383 87333',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Montserrat',
                     fontSize: 12,
                     color: Colors.white60,
                     height: 1.5,
                   ),
-                  textAlign: TextAlign.center,
+                  textAlign: isDesktop ? TextAlign.center : TextAlign.left,
                 ),
               ],
             ),

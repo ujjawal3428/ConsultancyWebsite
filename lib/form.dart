@@ -52,17 +52,17 @@ class _FormScreenState extends State<FormScreen> {
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(
         horizontal: isSmall ? 16 : 40,
-        vertical: isSmall ? 24 : 40,
+        vertical: isSmall ? 20 : 40,
       ),
       child: Container(
-        constraints: const BoxConstraints(maxWidth: 600),
+        constraints: const BoxConstraints(maxWidth: 550),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.red.withValues(alpha: 0.3),
-              blurRadius: 30,
+              color: Colors.black.withValues(alpha : 0.15),
+              blurRadius: 40,
               offset: const Offset(0, 10),
             ),
           ],
@@ -70,74 +70,25 @@ class _FormScreenState extends State<FormScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Header with close button
-            Container(
-              padding: EdgeInsets.all(isSmall ? 16 : 20),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.grey[200]!),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Icon(Icons.calendar_today, color: Colors.white, size: 20),
-                  ),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Book an Appointment',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        SizedBox(height: 2),
-                        Text(
-                          'Fill in your details below',
-                          style: TextStyle(fontSize: 13, color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close, color: Colors.grey),
-                    onPressed: () => Navigator.of(context).pop(),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
-                ],
-              ),
-            ),
-            // Form content
+            _buildHeader(context, isSmall),
             Flexible(
               child: SingleChildScrollView(
-                padding: EdgeInsets.all(isSmall ? 20 : 24),
+                padding: EdgeInsets.all(isSmall ? 24 : 32),
                 child: Form(
                   key: _formKey,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _buildHelpDropdown(),
-                      const SizedBox(height: 20),
-                      _buildNameSection(isSmall),
-                      const SizedBox(height: 20),
-                      _buildEmailField(),
-                      const SizedBox(height: 20),
-                      _buildPhoneField(isSmall),
-                      const SizedBox(height: 20),
-                      _buildFillingPersonDropdown(),
                       const SizedBox(height: 24),
+                      _buildNameSection(isSmall),
+                      const SizedBox(height: 24),
+                      _buildEmailField(),
+                      const SizedBox(height: 24),
+                      _buildPhoneField(isSmall),
+                      const SizedBox(height: 24),
+                      _buildFillingPersonDropdown(),
+                      const SizedBox(height: 32),
                       _buildSubmitButton(),
                     ],
                   ),
@@ -150,33 +101,102 @@ class _FormScreenState extends State<FormScreen> {
     );
   }
 
+  Widget _buildHeader(BuildContext context, bool isSmall) {
+    return Container(
+      padding: EdgeInsets.all(isSmall ? 20 : 24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.red.shade600, Colors.red.shade700],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha : 0.2),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(Icons.event_note, color: Colors.white, size: 24),
+          ),
+          const SizedBox(width: 16),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Book an Appointment',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'We\'ll get back to you shortly',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha : 0.2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.close, color: Colors.white, size: 22),
+              onPressed: () => Navigator.of(context).pop(),
+              padding: const EdgeInsets.all(8),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildHelpDropdown() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildLabel('How can we help you?', true),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         Container(
           decoration: BoxDecoration(
+            color: Colors.grey[50],
             border: Border.all(color: Colors.grey[300]!),
             borderRadius: BorderRadius.circular(12),
           ),
           child: DropdownButtonFormField<String>(
             initialValue: _selectedHelp,
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               border: InputBorder.none,
               hintText: 'Select your inquiry type',
-              hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
-              prefixIcon: const Icon(Icons.help_outline, color: Colors.red, size: 20),
+              hintStyle: TextStyle(color: Colors.grey[400], fontSize: 15),
+              prefixIcon: Icon(Icons.help_outline, color: Colors.red[600], size: 22),
             ),
-            icon: const Icon(Icons.arrow_drop_down, color: Colors.red),
+            icon: Icon(Icons.keyboard_arrow_down, color: Colors.red[600], size: 28),
             isExpanded: true,
+            dropdownColor: Colors.white,
             items: _helpOptions.map((option) {
-              return DropdownMenuItem(value: option, child: Text(option, style: const TextStyle(fontSize: 14)));
+              return DropdownMenuItem(
+                value: option,
+                child: Text(option, style: const TextStyle(fontSize: 15)),
+              );
             }).toList(),
             onChanged: (value) => setState(() => _selectedHelp = value),
-            validator: (value) => value == null ? 'Required' : null,
+            validator: (value) => value == null ? 'Please select an option' : null,
           ),
         ),
       ],
@@ -187,20 +207,20 @@ class _FormScreenState extends State<FormScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildLabel('Name', true),
-        const SizedBox(height: 8),
+        _buildLabel('Full Name', true),
+        const SizedBox(height: 10),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: isSmall ? 80 : 100,
+              width: 90,
               child: _buildTitleDropdown(),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 12),
             Expanded(
               child: _buildTextField(
                 controller: _firstNameController,
-                label: 'First Name',
+                hint: 'First Name',
                 icon: Icons.person_outline,
                 isRequired: true,
               ),
@@ -210,7 +230,7 @@ class _FormScreenState extends State<FormScreen> {
         const SizedBox(height: 12),
         _buildTextField(
           controller: _lastNameController,
-          label: 'Last Name',
+          hint: 'Last Name',
           icon: Icons.person_outline,
           isRequired: true,
         ),
@@ -221,19 +241,25 @@ class _FormScreenState extends State<FormScreen> {
   Widget _buildTitleDropdown() {
     return Container(
       decoration: BoxDecoration(
+        color: Colors.grey[50],
         border: Border.all(color: Colors.grey[300]!),
         borderRadius: BorderRadius.circular(12),
       ),
       child: DropdownButtonFormField<String>(
         initialValue: _selectedTitle,
         decoration: const InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
           border: InputBorder.none,
           hintText: 'Title',
+          hintStyle: TextStyle(fontSize: 14),
         ),
-        icon: const Icon(Icons.arrow_drop_down, color: Colors.red, size: 20),
+        icon: Icon(Icons.keyboard_arrow_down, color: Colors.red[600], size: 22),
+        dropdownColor: Colors.white,
         items: _titles.map((title) {
-          return DropdownMenuItem(value: title, child: Text(title, style: const TextStyle(fontSize: 14)));
+          return DropdownMenuItem(
+            value: title,
+            child: Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+          );
         }).toList(),
         onChanged: (value) => setState(() => _selectedTitle = value),
         validator: (value) => value == null ? 'Required' : null,
@@ -243,28 +269,31 @@ class _FormScreenState extends State<FormScreen> {
 
   Widget _buildTextField({
     required TextEditingController controller,
-    required String label,
+    required String hint,
     required IconData icon,
     bool isRequired = false,
     TextInputType? keyboardType,
   }) {
     return Container(
       decoration: BoxDecoration(
+        color: Colors.grey[50],
         border: Border.all(color: Colors.grey[300]!),
         borderRadius: BorderRadius.circular(12),
       ),
       child: TextFormField(
         controller: controller,
         keyboardType: keyboardType,
-        style: const TextStyle(fontSize: 14),
+        style: const TextStyle(fontSize: 15),
         decoration: InputDecoration(
-          labelText: label,
-          labelStyle: TextStyle(color: Colors.grey[600], fontSize: 14),
-          prefixIcon: Icon(icon, color: Colors.red, size: 20),
+          hintText: hint,
+          hintStyle: TextStyle(color: Colors.grey[400], fontSize: 15),
+          prefixIcon: Icon(icon, color: Colors.red[600], size: 22),
           border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         ),
-        validator: (value) => isRequired && (value == null || value.isEmpty) ? 'Required' : null,
+        validator: (value) => isRequired && (value == null || value.isEmpty) 
+            ? 'This field is required' 
+            : null,
       ),
     );
   }
@@ -273,27 +302,30 @@ class _FormScreenState extends State<FormScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildLabel('Email', true),
-        const SizedBox(height: 8),
+        _buildLabel('Email Address', true),
+        const SizedBox(height: 10),
         Container(
           decoration: BoxDecoration(
+            color: Colors.grey[50],
             border: Border.all(color: Colors.grey[300]!),
             borderRadius: BorderRadius.circular(12),
           ),
           child: TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
-            style: const TextStyle(fontSize: 14),
+            style: const TextStyle(fontSize: 15),
             decoration: InputDecoration(
-              labelText: 'Email Address',
-              labelStyle: TextStyle(color: Colors.grey[600], fontSize: 14),
-              prefixIcon: const Icon(Icons.email_outlined, color: Colors.red, size: 20),
+              hintText: 'your.email@example.com',
+              hintStyle: TextStyle(color: Colors.grey[400], fontSize: 15),
+              prefixIcon: Icon(Icons.email_outlined, color: Colors.red[600], size: 22),
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             ),
             validator: (value) {
-              if (value == null || value.isEmpty) return 'Required';
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) return 'Invalid email';
+              if (value == null || value.isEmpty) return 'Email is required';
+              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                return 'Please enter a valid email';
+              }
               return null;
             },
           ),
@@ -306,49 +338,60 @@ class _FormScreenState extends State<FormScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildLabel('Phone', true),
-        const SizedBox(height: 8),
+        _buildLabel('Phone Number', true),
+        const SizedBox(height: 10),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: isSmall ? 80 : 100,
+              width: 90,
               decoration: BoxDecoration(
+                color: Colors.grey[50],
                 border: Border.all(color: Colors.grey[300]!),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: DropdownButtonFormField<String>(
                 initialValue: _selectedCountryCode,
                 decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 16),
                   border: InputBorder.none,
                 ),
-                icon: const Icon(Icons.arrow_drop_down, color: Colors.red, size: 20),
+                icon: Icon(Icons.keyboard_arrow_down, color: Colors.red[600], size: 22),
+                dropdownColor: Colors.white,
                 items: _countryCodes.map((code) {
-                  return DropdownMenuItem(value: code, child: Text(code, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)));
+                  return DropdownMenuItem(
+                    value: code,
+                    child: Text(
+                      code,
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                    ),
+                  );
                 }).toList(),
                 onChanged: (value) => setState(() => _selectedCountryCode = value!),
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 12),
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
+                  color: Colors.grey[50],
                   border: Border.all(color: Colors.grey[300]!),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TextFormField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
-                  style: const TextStyle(fontSize: 14),
+                  style: const TextStyle(fontSize: 15),
                   decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                    labelStyle: TextStyle(color: Colors.grey[600], fontSize: 14),
-                    prefixIcon: const Icon(Icons.phone_outlined, color: Colors.red, size: 20),
+                    hintText: 'Phone Number',
+                    hintStyle: TextStyle(color: Colors.grey[400], fontSize: 15),
+                    prefixIcon: Icon(Icons.phone_outlined, color: Colors.red[600], size: 22),
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   ),
-                  validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                  validator: (value) => value == null || value.isEmpty 
+                      ? 'Phone number is required' 
+                      : null,
                 ),
               ),
             ),
@@ -363,28 +406,33 @@ class _FormScreenState extends State<FormScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildLabel('Who is filling this form?', true),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         Container(
           decoration: BoxDecoration(
+            color: Colors.grey[50],
             border: Border.all(color: Colors.grey[300]!),
             borderRadius: BorderRadius.circular(12),
           ),
           child: DropdownButtonFormField<String>(
             initialValue: _selectedFillingPerson,
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               border: InputBorder.none,
               hintText: 'Select an option',
-              hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
-              prefixIcon: const Icon(Icons.people_outline, color: Colors.red, size: 20),
+              hintStyle: TextStyle(color: Colors.grey[400], fontSize: 15),
+              prefixIcon: Icon(Icons.people_outline, color: Colors.red[600], size: 22),
             ),
-            icon: const Icon(Icons.arrow_drop_down, color: Colors.red),
+            icon: Icon(Icons.keyboard_arrow_down, color: Colors.red[600], size: 28),
             isExpanded: true,
+            dropdownColor: Colors.white,
             items: _fillingPersonOptions.map((option) {
-              return DropdownMenuItem(value: option, child: Text(option, style: const TextStyle(fontSize: 14)));
+              return DropdownMenuItem(
+                value: option,
+                child: Text(option, style: const TextStyle(fontSize: 15)),
+              );
             }).toList(),
             onChanged: (value) => setState(() => _selectedFillingPerson = value),
-            validator: (value) => value == null ? 'Required' : null,
+            validator: (value) => value == null ? 'Please select an option' : null,
           ),
         ),
       ],
@@ -394,16 +442,45 @@ class _FormScreenState extends State<FormScreen> {
   Widget _buildLabel(String label, bool isRequired) {
     return Row(
       children: [
-        Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.black)),
-        if (isRequired) const Text(' *', style: TextStyle(color: Colors.red, fontSize: 14, fontWeight: FontWeight.bold)),
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF1a1a1a),
+          ),
+        ),
+        if (isRequired)
+          const Text(
+            ' *',
+            style: TextStyle(
+              color: Colors.red,
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
       ],
     );
   }
 
   Widget _buildSubmitButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 50,
+    return Container(
+      height: 54,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.red.shade600, Colors.red.shade700],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.red.withValues(alpha : 0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: ElevatedButton(
         onPressed: () {
           if (_formKey.currentState!.validate()) {
@@ -412,28 +489,45 @@ class _FormScreenState extends State<FormScreen> {
               SnackBar(
                 content: const Row(
                   children: [
-                    Icon(Icons.check_circle, color: Colors.white),
+                    Icon(Icons.check_circle_outline, color: Colors.white, size: 24),
                     SizedBox(width: 12),
-                    Text('Appointment booked successfully!'),
+                    Expanded(
+                      child: Text(
+                        'Appointment booked successfully!',
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                      ),
+                    ),
                   ],
                 ),
-                backgroundColor: Colors.red,
+                backgroundColor: Colors.green.shade600,
                 behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                margin: const EdgeInsets.all(16),
               ),
             );
           }
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,
-          elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Submit Appointment', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(
+              'Book Appointment',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
+            ),
             SizedBox(width: 8),
             Icon(Icons.arrow_forward, size: 20),
           ],

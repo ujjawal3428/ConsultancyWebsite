@@ -208,13 +208,10 @@ class _CustomAppBarState extends State<CustomAppBar>
     final isMobile = screenWidth <= 768;
 
     // The Stack widget is the new parent for Positioned
-    return Stack(
-      children: [
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          child: SlideTransition(
+    return SizedBox(
+      child: Stack(
+        children: [
+          SlideTransition(
             position: _slideAnimation,
             child: Container(
               decoration: BoxDecoration(
@@ -251,8 +248,8 @@ class _CustomAppBarState extends State<CustomAppBar>
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -670,7 +667,7 @@ class _CustomAppBarState extends State<CustomAppBar>
       case 'About Us':
         return AboutUsMenu.getMobileMenuItems();
       case 'Services':
-        return ServicesMenu.getMobileMenuItems();
+        return ServicesMenu.getMobileMenuItems(context);
       case 'Resources':
         return ResourcesMenu.getMobileMenuItems();
       default:

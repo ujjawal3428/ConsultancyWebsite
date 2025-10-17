@@ -1,5 +1,6 @@
 import 'package:consultancy_website/form.dart';
 import 'package:consultancy_website/screens/shop.dart' show ShopPage;
+import 'package:consultancy_website/services/undergraduateprep.dart';
 import 'package:consultancy_website/widgets/navitemsdropdown/events.dart';
 import 'package:consultancy_website/widgets/navitemsdropdown/newsroom.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,9 @@ class MainApp extends StatelessWidget {
         '/newsroom': (context) => const Newsroom(),
         '/shop': (context) => const ShopPage(),
         '/formscreen': (context) => const FormScreen(),
+
+        //Service routes
+        '/undergraduate-preparation': (context) => const Undergraduateprep(),
       },
 
       initialRoute: '/', // ✅ App starts with HomeScreen

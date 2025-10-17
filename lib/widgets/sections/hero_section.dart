@@ -426,31 +426,40 @@ class _HeroSectionState extends State<HeroSection>
     );
   }
 
-  Widget _buildStatItem(String number, String label) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          number,
-          style: TextStyle(
-            fontSize: 24,
-            fontFamily: 'Cinzel',
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFFD32F2F),
+ Widget _buildStatItem(String number, String label) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Text(
+        number,
+        style: const TextStyle(
+          fontSize: 24,
+          fontFamily: 'Cinzel',
+          fontWeight: FontWeight.bold,
+          color: Color(0xFFD32F2F),
+        ),
+      ),
+      SizedBox(
+        width: 80, // adjust as needed for mobile layout
+        child: Align(
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            softWrap: true,
+            overflow: TextOverflow.visible,
+            style: const TextStyle(
+              fontFamily: 'Montserrat',
+              fontSize: 12,
+              color: Color(0xFF666666),
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
-        Text(
-          label,
-          style: TextStyle(
-            fontFamily: 'Montserrat',
-            fontSize: 12,
-            color: const Color(0xFF666666),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
 
   Widget _buildImageContent() {
     return AnimatedBuilder(
