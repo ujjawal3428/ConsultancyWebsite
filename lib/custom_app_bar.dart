@@ -3,14 +3,16 @@ import 'dart:async';
 import 'package:consultancy_website/form.dart' show FormScreen;
 import 'package:consultancy_website/widgets/navitemsdropdown/aboutdd.dart';
 import 'package:consultancy_website/widgets/navitemsdropdown/resourcesdd.dart';
-import 'package:consultancy_website/widgets/navitemsdropdown/servicesdd.dart';
 import 'package:flutter/material.dart';
 
-class CustomAppBar extends StatefulWidget {
+class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key});
 
   @override
   State<CustomAppBar> createState() => _CustomAppBarState();
+
+  @override
+  Size get preferredSize => const Size.fromHeight(70); // Adjust height as needed
 }
 
 class _CustomAppBarState extends State<CustomAppBar>
@@ -171,10 +173,9 @@ class _CustomAppBarState extends State<CustomAppBar>
         Overlay.of(context).insert(_overlayEntry!);
         setState(() {
           _activeDropdown = menuType;
+          _isTransitioning = false;
         });
       }
-
-      _isTransitioning = false;
     });
   }
 
@@ -182,8 +183,6 @@ class _CustomAppBarState extends State<CustomAppBar>
     switch (menuType) {
       case 'About Us':
         return const AboutUsMenu();
-      case 'Services':
-        return const ServicesMenu();
       case 'Resources':
         return const ResourcesMenu();
       default:
@@ -191,13 +190,13 @@ class _CustomAppBarState extends State<CustomAppBar>
     }
   }
 
-  // Navigation function for non-dropdown items
+  // Navigation function for non-dropdown items - uses replacements to prevent app bar blink
   void _navigateToPage(String pageRoute) {
     // Close any open dropdowns first
     _removeOverlay();
 
-    // Navigate to the specified route
-    Navigator.pushNamed(context, pageRoute);
+    // Use pushReplacementNamed to avoid rebuilding the entire widget tree
+    Navigator.pushReplacementNamed(context, pageRoute);
   }
 
   @override
@@ -207,48 +206,41 @@ class _CustomAppBarState extends State<CustomAppBar>
     final isTablet = screenWidth > 768 && screenWidth <= 1024;
     final isMobile = screenWidth <= 768;
 
-    // The Stack widget is the new parent for Positioned
-    return SizedBox(
-      child: Stack(
-        children: [
-          SlideTransition(
-            position: _slideAnimation,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: _isScrolled
-                    ? [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
-                          offset: const Offset(0, 2),
-                          blurRadius: 12,
-                        ),
-                      ]
-                    : [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          offset: const Offset(0, 1),
-                          blurRadius: 4,
-                        ),
-                      ],
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: isDesktop ? 32 : (isTablet ? 24 : 16),
-                  vertical: isDesktop ? 18 : 15,
-                ),
-                child: Row(
-                  children: [
-                    _buildLogo(isDesktop, isTablet),
-                    const Spacer(),
-                    if (!isMobile) _buildDesktopNavigation(isDesktop),
-                    if (isMobile) _buildMobileMenuButton(),
-                  ],
-                ),
-              ),
-            ),
+    return SlideTransition(
+      position: _slideAnimation,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: _isScrolled
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    offset: const Offset(0, 2),
+                    blurRadius: 12,
+                  ),
+                ]
+              : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    offset: const Offset(0, 1),
+                    blurRadius: 4,
+                  ),
+                ],
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: isDesktop ? 32 : (isTablet ? 24 : 16),
+            vertical: isDesktop ? 18 : 15,
           ),
-        ],
+          child: Row(
+            children: [
+              _buildLogo(isDesktop, isTablet),
+              const Spacer(),
+              if (!isMobile) _buildDesktopNavigation(isDesktop),
+              if (isMobile) _buildMobileMenuButton(),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -331,8 +323,8 @@ class _CustomAppBarState extends State<CustomAppBar>
   Widget _buildDesktopNavigation(bool isDesktop) {
     final menuItems = [
       {'title': 'About Us', 'hasDropdown': true, 'route': null},
-      {'title': 'Services', 'hasDropdown': true, 'route': null},
       {'title': 'Resources', 'hasDropdown': true, 'route': null},
+      {'title': 'Services', 'hasDropdown': false, 'route': '/services'},
       {'title': 'Events', 'hasDropdown': false, 'route': '/events'},
       {'title': 'Newsroom', 'hasDropdown': false, 'route': '/newsroom'},
       {'title': 'Shop', 'hasDropdown': false, 'route': '/shop'},
@@ -382,7 +374,6 @@ class _CustomAppBarState extends State<CustomAppBar>
           },
           onExit: (_) {
             if (mounted && !_isTransitioning) {
-              // Only clear hover state if we're not hovering over the dropdown
               if (_activeDropdown != title) {
                 setState(() {
                   _hoveredItem = null;
@@ -403,15 +394,12 @@ class _CustomAppBarState extends State<CustomAppBar>
                   _showDropdownMenu(title, buttonKey);
                 }
               } else if (!hasDropdown && route != null) {
-                // Navigate to the specified route for non-dropdown items
                 _navigateToPage(route);
               }
             },
             borderRadius: BorderRadius.circular(8),
             child: AnimatedContainer(
-              duration: const Duration(
-                milliseconds: 150,
-              ), // Reduced animation duration
+              duration: const Duration(milliseconds: 150),
               padding: EdgeInsets.symmetric(
                 vertical: 12,
                 horizontal: isDesktop ? 16 : 12,
@@ -440,9 +428,7 @@ class _CustomAppBarState extends State<CustomAppBar>
                     const SizedBox(width: 4),
                     AnimatedRotation(
                       turns: isActive ? 0.5 : 0,
-                      duration: const Duration(
-                        milliseconds: 150,
-                      ), // Reduced animation duration
+                      duration: const Duration(milliseconds: 150),
                       child: Icon(
                         Icons.keyboard_arrow_down,
                         size: 18,
@@ -490,7 +476,7 @@ class _CustomAppBarState extends State<CustomAppBar>
                 onTap: () {
                   showDialog(
                     context: context,
-                    barrierDismissible: true, // User can tap outside to close
+                    barrierDismissible: true,
                     builder: (BuildContext context) {
                       return const FormScreen();
                     },
@@ -587,16 +573,16 @@ class _CustomAppBarState extends State<CustomAppBar>
                       null,
                     ),
                     _buildMobileMenuItem(
-                      'Services',
-                      Icons.work_outline,
-                      true,
-                      null,
-                    ),
-                    _buildMobileMenuItem(
                       'Resources',
                       Icons.library_books_outlined,
                       true,
                       null,
+                    ),
+                    _buildMobileMenuItem(
+                      'Services',
+                      Icons.work_outline,
+                      false,
+                      '/services',
                     ),
                     _buildMobileMenuItem(
                       'Events',
@@ -650,8 +636,8 @@ class _CustomAppBarState extends State<CustomAppBar>
       onExpansionChanged: !hasSubMenu
           ? (expanded) {
               if (!expanded && route != null) {
-                Navigator.pop(context); // Close the bottom sheet
-                _navigateToPage(route); // Navigate to the page
+                Navigator.pop(context);
+                _navigateToPage(route);
               }
             }
           : null,
@@ -666,8 +652,6 @@ class _CustomAppBarState extends State<CustomAppBar>
     switch (menuType) {
       case 'About Us':
         return AboutUsMenu.getMobileMenuItems();
-      case 'Services':
-        return ServicesMenu.getMobileMenuItems(context);
       case 'Resources':
         return ResourcesMenu.getMobileMenuItems();
       default:
