@@ -7,11 +7,7 @@ class BrandsSection extends StatefulWidget {
   State<BrandsSection> createState() => _BrandsSectionState();
 }
 
-class _BrandsSectionState extends State<BrandsSection>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _scrollController;
-  late Animation<double> _scrollAnimation;
-
+class _BrandsSectionState extends State<BrandsSection> {
   // Brand logos data
   final List<BrandData> brands = [
     BrandData(
@@ -44,32 +40,6 @@ class _BrandsSectionState extends State<BrandsSection>
     ),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = AnimationController(
-      duration: const Duration(seconds: 20), // Adjust speed here
-      vsync: this,
-    );
-
-    _scrollAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _scrollController,
-      curve: Curves.linear,
-    ));
-
-    // Start continuous animation
-    _scrollController.repeat();
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   // Helper method to determine screen size category
   ScreenSize _getScreenSize(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -88,10 +58,10 @@ class _BrandsSectionState extends State<BrandsSection>
           titleFontSize: 28,
           verticalPadding: 40,
           horizontalPadding: 20,
-          brandHeight: 80,
-          brandWidth: 200,
-          brandMargin: 10,
-          logoHeight: 50,
+          brandHeight: 120,
+          brandWidth: 240,
+          brandMargin: 15,
+          logoHeight: 80,
           statNumberFontSize: 36,
           statLabelFontSize: 14,
           statColumns: 2,
@@ -102,10 +72,10 @@ class _BrandsSectionState extends State<BrandsSection>
           titleFontSize: 36,
           verticalPadding: 60,
           horizontalPadding: 30,
-          brandHeight: 100,
-          brandWidth: 240,
-          brandMargin: 15,
-          logoHeight: 65,
+          brandHeight: 140,
+          brandWidth: 280,
+          brandMargin: 20,
+          logoHeight: 100,
           statNumberFontSize: 48,
           statLabelFontSize: 16,
           statColumns: 4,
@@ -116,10 +86,10 @@ class _BrandsSectionState extends State<BrandsSection>
           titleFontSize: 48,
           verticalPadding: 80,
           horizontalPadding: 40,
-          brandHeight: 120,
-          brandWidth: 280,
-          brandMargin: 20,
-          logoHeight: 80,
+          brandHeight: 160,
+          brandWidth: 320,
+          brandMargin: 25,
+          logoHeight: 120,
           statNumberFontSize: 64,
           statLabelFontSize: 18,
           statColumns: 4,
@@ -162,15 +132,10 @@ class _BrandsSectionState extends State<BrandsSection>
                 ),
                 SizedBox(height: responsive.verticalPadding * 0.75),
                 
-                // Scrolling brands
+                // Scrollable brands
                 SizedBox(
                   height: responsive.brandHeight.toDouble(),
-                  child: AnimatedBuilder(
-                    animation: _scrollAnimation,
-                    builder: (context, child) {
-                      return _buildScrollingBrands(responsive);
-                    },
-                  ),
+                  child: _buildScrollableBrands(responsive),
                 ),
               ],
             ),
@@ -191,34 +156,13 @@ class _BrandsSectionState extends State<BrandsSection>
     );
   }
 
-  Widget _buildScrollingBrands(ResponsiveValues responsive) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double brandWidth = responsive.brandWidth.toDouble();
-        final double totalBrandsWidth = brandWidth * brands.length;
-        
-        // Calculate scroll offset
-        final double scrollOffset = _scrollAnimation.value * (totalBrandsWidth + brandWidth);
-        
-        return ClipRect(
-          child: OverflowBox(
-            maxWidth: double.infinity,
-            child: Transform.translate(
-              offset: Offset(-scrollOffset, 0),
-              child: Row(
-                children: [
-                  // First set of brands
-                  ...brands.map((brand) => _buildBrandItem(brand, responsive)),
-                  // Duplicate set for seamless loop
-                  ...brands.map((brand) => _buildBrandItem(brand, responsive)),
-                  // Extra brand to ensure smooth transition
-                  _buildBrandItem(brands.first, responsive),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+  Widget _buildScrollableBrands(ResponsiveValues responsive) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.symmetric(horizontal: responsive.horizontalPadding.toDouble()),
+      child: Row(
+        children: brands.map((brand) => _buildBrandItem(brand, responsive)).toList(),
+      ),
     );
   }
 
