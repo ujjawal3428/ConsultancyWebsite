@@ -1,5 +1,4 @@
 import 'package:consultancy_website/models/college.dart';
-import 'package:consultancy_website/widgets/college_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:consultancy_website/custom_app_bar.dart';
 import 'package:consultancy_website/widgets/footer_widget.dart';
@@ -16,13 +15,14 @@ class _ServicesMenuState extends State<ServicesMenu> {
   final Map<String, bool> expandedDegrees = {};
   College? selectedCollege;
   bool showMobileDetails = false;
+  final Set<String> expandedFAQs = {};
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80),
+        preferredSize: const Size.fromHeight(88),
         child: CustomAppBar(),
       ),
       body: SingleChildScrollView(
@@ -47,28 +47,35 @@ class _ServicesMenuState extends State<ServicesMenu> {
   }
 
   Widget _buildDesktopLayout() {
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            width: 300,
-            color: const Color(0xFFF9FAFB),
-            child: SingleChildScrollView(
-              child: _buildNavigationPanel(),
-            ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 320,
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height - 80 - 200,
           ),
-          Container(width: 1, color: const Color(0xFFE5E7EB)),
-          Expanded(
-            child: Container(
-              color: Colors.white,
-              child: selectedCollege != null
-                  ? SingleChildScrollView(child: _buildCollegeDetails(selectedCollege!))
-                  : const EmptyStateWidget(),
-            ),
+          color: const Color(0xFFF9FAFB),
+          child: SingleChildScrollView(
+            child: _buildNavigationPanel(),
           ),
-        ],
-      ),
+        ),
+        Container(width: 1, color: const Color(0xFFE5E7EB)),
+        Expanded(
+          child: Container(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height - 80 - 200,
+            ),
+            color: Colors.white,
+            child: selectedCollege != null
+                ? SingleChildScrollView(
+                    padding: const EdgeInsets.all(32),
+                    child: _buildCollegeDetails(selectedCollege!),
+                  )
+                : const EmptyStateWidget(),
+          ),
+        ),
+      ],
     );
   }
 
@@ -102,7 +109,10 @@ class _ServicesMenuState extends State<ServicesMenu> {
               ],
             ),
           ),
-          Expanded(child: _buildCollegeDetails(selectedCollege!)),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: _buildCollegeDetails(selectedCollege!),
+          ),
         ],
       );
     }
@@ -267,199 +277,491 @@ class _ServicesMenuState extends State<ServicesMenu> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isMobile = constraints.maxWidth < 768;
-        final padding = isMobile ? 16.0 : 32.0;
 
-        return SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(padding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header Card
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(isMobile ? 24 : 32),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.red.shade50,
-                        Colors.red.shade100,
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.red.shade200),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Modern Header with Gradient
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.red.shade600, Colors.red.shade800],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.red.withValues(alpha: 0.3),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.red.shade100,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(college.logo, size: 40, color: Colors.red),
+                ],
+              ),
+              child: Stack(
+                children: [
+                  // Decorative circles
+                  Positioned(
+                    right: -30,
+                    top: -30,
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withValues(alpha: 0.1),
                       ),
-                      const SizedBox(height: 20),
-                      Text(
-                        college.name,
-                        style: TextStyle(
-                          fontSize: isMobile ? 24 : 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red.shade800,
-                        ),
+                    ),
+                  ),
+                  Positioned(
+                    left: -20,
+                    bottom: -20,
+                    child: Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withValues(alpha: 0.08),
                       ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          Icon(Icons.location_on, size: 18, color: Colors.red.shade700),
-                          const SizedBox(width: 8),
-                          Text(
-                            '${college.city}, ${college.state}',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.red.shade700,
-                              fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(isMobile ? 24 : 32),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.1),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Icon(college.logo, size: 36, color: Colors.red.shade700),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(8),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(alpha: 0.2),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Text(
+                                      college.type,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        child: Text(
-                          college.type,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
+                        const SizedBox(height: 20),
+                        Text(
+                          college.name,
+                          style: TextStyle(
+                            fontSize: isMobile ? 22 : 28,
+                            fontWeight: FontWeight.bold,
                             color: Colors.white,
+                            height: 1.3,
                           ),
                         ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.location_on, size: 16, color: Colors.white),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                '${college.city}, ${college.state}',
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: isMobile ? 20 : 28),
+
+            // Quick Stats Row
+            Row(
+              children: [
+                Expanded(
+                  child: _buildQuickStat(
+                    icon: Icons.access_time,
+                    label: 'Duration',
+                    value: '${college.duration} months',
+                    color: Colors.blue,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildQuickStat(
+                    icon: Icons.event_available,
+                    label: 'Deadline',
+                    value: college.admissionDeadline,
+                    color: Colors.orange,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: isMobile ? 20 : 28),
+
+            // About Section
+            _buildSectionTitle('About College', Icons.info_outline),
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.grey.shade200),
+              ),
+              child: Text(
+                college.description,
+                style: const TextStyle(
+                  fontSize: 15,
+                  color: Color(0xFF4B5563),
+                  height: 1.7,
+                ),
+              ),
+            ),
+            SizedBox(height: isMobile ? 20 : 28),
+
+            // FAQs Section
+            _buildSectionTitle('Frequently Asked Questions', Icons.help_outline),
+            const SizedBox(height: 12),
+            ..._buildFAQs(college),
+            SizedBox(height: isMobile ? 20 : 28),
+
+            // Action Buttons
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Opening brochure for ${college.name}...'),
+                          duration: const Duration(seconds: 2),
+                          backgroundColor: Colors.blue.shade700,
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.picture_as_pdf, size: 20),
+                    label: const Text('Brochure'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue.shade600,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: isMobile ? 24 : 32),
-
-                // Description
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade50,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade200),
-                  ),
-                  child: Text(
-                    college.description,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      color: Color(0xFF4B5563),
-                      height: 1.7,
+                      elevation: 0,
                     ),
                   ),
                 ),
-                SizedBox(height: isMobile ? 24 : 32),
-
-                // Key Details Grid
-                GridView.count(
-                  crossAxisCount: isMobile ? 2 : 3,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 1.4,
-                  children: [
-                    InfoCard(
-                      label: 'Duration',
-                      value: '${college.duration}',
-                      subvalue: 'months',
-                      color: Colors.blue,
-                      icon: Icons.schedule,
-                    ),
-                    InfoCard(
-                      label: 'Deadline',
-                      value: college.admissionDeadline.split('-')[0],
-                      subvalue: college.admissionDeadline.split('-')[1],
-                      color: Colors.orange,
-                      icon: Icons.calendar_today,
-                    ),
-                    InfoCard(
-                      label: 'College Type',
-                      value: college.type,
-                      subvalue: 'Institution',
-                      color: Colors.green,
-                      icon: Icons.school,
-                    ),
-                  ],
-                ),
-                SizedBox(height: isMobile ? 24 : 32),
-
-                // FAQ Section
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Frequently Asked Questions',
-                      style: TextStyle(
-                        fontSize: isMobile ? 18 : 20,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF111827),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    ...[
-                      'What is the benefit?',
-                      'Why choose this college?',
-                      'What is the eligibility?',
-                      'What are the top reasons to study here?',
-                      'What documents are required?',
-                    ].map((question) => FAQItem(question: question)),
-                  ],
-                ),
-                SizedBox(height: isMobile ? 24 : 32),
-
-                // Contact Button
-                SizedBox(
-                  width: double.infinity,
-                  height: 56,
-                  child: ElevatedButton(
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton.icon(
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Contacting ${college.name}...'),
                           duration: const Duration(seconds: 2),
-                          backgroundColor: Colors.red,
+                          backgroundColor: Colors.red.shade600,
                         ),
                       );
                     },
+                    icon: const Icon(Icons.phone, size: 20),
+                    label: const Text('Contact'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    ),
-                    child: const Text(
-                      'Contact College',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
+                      backgroundColor: Colors.red.shade600,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
+                      elevation: 0,
                     ),
                   ),
                 ),
-                SizedBox(height: isMobile ? 20 : 24),
+              ],
+            ),
+            const SizedBox(height: 24),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildQuickStat({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, size: 20, color: color),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: color.withValues(alpha: 0.7),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
           ),
-        );
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title, IconData icon) {
+    return Row(
+      children: [
+        Icon(icon, size: 22, color: Colors.red.shade700),
+        const SizedBox(width: 10),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey.shade800,
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildFAQs(College college) {
+    final faqs = [
+      {
+        'question': 'What is the benefit?',
+        'answer': 'This program offers industry-recognized certification and excellent career prospects with top placement opportunities.',
       },
+      {
+        'question': 'Why choose this college?',
+        'answer': 'Ranked among the top institutions with experienced faculty, modern infrastructure, and strong industry connections.',
+      },
+      {
+        'question': 'What is the eligibility?',
+        'answer': 'Candidates must have completed their previous degree with minimum required percentage and meet age criteria.',
+      },
+      {
+        'question': 'What are the top reasons to study here?',
+        'answer': 'Expert faculty, modern facilities, excellent placement record, industry exposure, and comprehensive curriculum.',
+      },
+      {
+        'question': 'What documents are required?',
+        'answer': 'Previous degree certificates, mark sheets, ID proof, photographs, and transfer certificate are required for admission.',
+      },
+    ];
+
+    return faqs.map((faq) {
+      final question = faq['question']!;
+      final answer = faq['answer']!;
+      final isExpanded = expandedFAQs.contains(question);
+
+      return Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isExpanded ? Colors.red.shade200 : Colors.grey.shade200,
+          ),
+          boxShadow: isExpanded
+              ? [
+                  BoxShadow(
+                    color: Colors.red.withValues(alpha: 0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : [],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  if (isExpanded) {
+                    expandedFAQs.remove(question);
+                  } else {
+                    expandedFAQs.add(question);
+                  }
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade50,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            isExpanded ? Icons.remove : Icons.add,
+                            size: 18,
+                            color: Colors.red.shade700,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            question,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey.shade800,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (isExpanded) ...[
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 44),
+                        child: Text(
+                          answer,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey.shade600,
+                            height: 1.6,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }).toList();
+  }
+}
+
+/// Widget displaying the empty state when no college is selected
+class EmptyStateWidget extends StatelessWidget {
+  const EmptyStateWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(40.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.school_outlined,
+                size: 64,
+                color: Colors.grey.shade400,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Select a college to view details',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Browse through categories on the left',
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.grey.shade400,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
