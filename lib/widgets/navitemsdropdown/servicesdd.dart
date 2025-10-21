@@ -1,4 +1,5 @@
 import 'package:consultancy_website/models/college.dart';
+import 'package:consultancy_website/widgets/featuredquestions.dart';
 import 'package:flutter/material.dart';
 import 'package:consultancy_website/custom_app_bar.dart';
 import 'package:consultancy_website/widgets/footer_widget.dart';
@@ -15,7 +16,6 @@ class _ServicesMenuState extends State<ServicesMenu> {
   final Map<String, bool> expandedDegrees = {};
   College? selectedCollege;
   bool showMobileDetails = false;
-  final Set<String> expandedFAQs = {};
 
   @override
   Widget build(BuildContext context) {
@@ -461,10 +461,9 @@ class _ServicesMenuState extends State<ServicesMenu> {
             ),
             SizedBox(height: isMobile ? 20 : 28),
 
-            // FAQs Section
-            _buildSectionTitle('Frequently Asked Questions', Icons.help_outline),
-            const SizedBox(height: 12),
-            ..._buildFAQs(college),
+           
+          FeaturedQuestionsWidget(college: college),
+            
             SizedBox(height: isMobile ? 20 : 28),
 
             // Action Buttons
@@ -598,123 +597,6 @@ class _ServicesMenuState extends State<ServicesMenu> {
         ),
       ],
     );
-  }
-
-  List<Widget> _buildFAQs(College college) {
-    final faqs = [
-      {
-        'question': 'What is the benefit?',
-        'answer': 'This program offers industry-recognized certification and excellent career prospects with top placement opportunities.',
-      },
-      {
-        'question': 'Why choose this college?',
-        'answer': 'Ranked among the top institutions with experienced faculty, modern infrastructure, and strong industry connections.',
-      },
-      {
-        'question': 'What is the eligibility?',
-        'answer': 'Candidates must have completed their previous degree with minimum required percentage and meet age criteria.',
-      },
-      {
-        'question': 'What are the top reasons to study here?',
-        'answer': 'Expert faculty, modern facilities, excellent placement record, industry exposure, and comprehensive curriculum.',
-      },
-      {
-        'question': 'What documents are required?',
-        'answer': 'Previous degree certificates, mark sheets, ID proof, photographs, and transfer certificate are required for admission.',
-      },
-    ];
-
-    return faqs.map((faq) {
-      final question = faq['question']!;
-      final answer = faq['answer']!;
-      final isExpanded = expandedFAQs.contains(question);
-
-      return Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isExpanded ? Colors.red.shade200 : Colors.grey.shade200,
-          ),
-          boxShadow: isExpanded
-              ? [
-                  BoxShadow(
-                    color: Colors.red.withValues(alpha: 0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : [],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  if (isExpanded) {
-                    expandedFAQs.remove(question);
-                  } else {
-                    expandedFAQs.add(question);
-                  }
-                });
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.red.shade50,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            isExpanded ? Icons.remove : Icons.add,
-                            size: 18,
-                            color: Colors.red.shade700,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            question,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.grey.shade800,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (isExpanded) ...[
-                      const SizedBox(height: 12),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 44),
-                        child: Text(
-                          answer,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey.shade600,
-                            height: 1.6,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }).toList();
   }
 }
 
