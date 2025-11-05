@@ -3,7 +3,6 @@ import 'package:consultancy_website/screens/shop.dart' show ShopPage;
 import 'package:consultancy_website/services/undergraduateprep.dart';
 import 'package:consultancy_website/widgets/navitemsdropdown/events.dart';
 import 'package:consultancy_website/widgets/navitemsdropdown/newsroom.dart';
-import 'package:consultancy_website/widgets/navitemsdropdown/servicesdd.dart';
 import 'package:flutter/material.dart';
 import 'screens/home_screen.dart';
 // import 'screens/events_page.dart';
@@ -36,7 +35,6 @@ class MainApp extends StatelessWidget {
         '/events': (context) => const EventsPage(),
         '/newsroom': (context) => const Newsroom(),
         '/shop': (context) => const ShopPage(),
-        '/services': (context) => const ServicesMenu(), // Placeholder for ServicesPage
         '/formscreen': (context) => const FormScreen(),
 
         //Service routes

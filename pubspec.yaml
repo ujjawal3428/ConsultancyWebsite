@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   animated_3d_card: ^0.0.9
+  cloud_firestore: ^6.0.3
   firebase_core: ^4.1.1
   flutter:
     sdk: flutter

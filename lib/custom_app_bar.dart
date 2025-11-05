@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:consultancy_website/form.dart' show FormScreen;
 import 'package:consultancy_website/widgets/navitemsdropdown/aboutdd.dart';
 import 'package:consultancy_website/widgets/navitemsdropdown/resourcesdd.dart';
+import 'package:consultancy_website/widgets/navitemsdropdown/servicesdd.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -12,7 +13,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   State<CustomAppBar> createState() => _CustomAppBarState();
 
   @override
-  Size get preferredSize => const Size.fromHeight(70); // Adjust height as needed
+  Size get preferredSize => const Size.fromHeight(70);
 }
 
 class _CustomAppBarState extends State<CustomAppBar>
@@ -21,15 +22,11 @@ class _CustomAppBarState extends State<CustomAppBar>
   late Animation<Offset> _slideAnimation;
   final bool _isScrolled = false;
 
-  // Overlay controllers for dropdown menus
   OverlayEntry? _overlayEntry;
   String? _activeDropdown;
   String? _hoveredItem;
 
-  // Timer for delayed closing - increased delay to prevent flicker
   Timer? _closeTimer;
-
-  // Add a flag to prevent rapid state changes
   bool _isTransitioning = false;
 
   @override
@@ -56,7 +53,7 @@ class _CustomAppBarState extends State<CustomAppBar>
   }
 
   void _removeOverlay() {
-    if (_isTransitioning) return; // Prevent multiple calls
+    if (_isTransitioning) return;
 
     _closeTimer?.cancel();
     _overlayEntry?.remove();
@@ -69,7 +66,6 @@ class _CustomAppBarState extends State<CustomAppBar>
 
   void _scheduleClose() {
     _closeTimer?.cancel();
-    // Increased delay to prevent flicker when moving between nav item and dropdown
     _closeTimer = Timer(const Duration(milliseconds: 200), () {
       if (_hoveredItem == null || _hoveredItem != _activeDropdown) {
         _removeOverlay();
@@ -82,11 +78,10 @@ class _CustomAppBarState extends State<CustomAppBar>
   }
 
   void _showDropdownMenu(String menuType, GlobalKey buttonKey) {
-    if (_isTransitioning) return; // Prevent rapid transitions
+    if (_isTransitioning) return;
 
     _cancelClose();
 
-    // If the same dropdown is already open, don't recreate it
     if (_activeDropdown == menuType && _overlayEntry != null) {
       return;
     }
@@ -94,7 +89,6 @@ class _CustomAppBarState extends State<CustomAppBar>
     _isTransitioning = true;
     _removeOverlay();
 
-    // Add a small delay before showing new dropdown to prevent flicker
     Future.delayed(const Duration(milliseconds: 50), () {
       if (!mounted) return;
 
@@ -111,7 +105,6 @@ class _CustomAppBarState extends State<CustomAppBar>
       _overlayEntry = OverlayEntry(
         builder: (context) => Stack(
           children: [
-            // Invisible barrier to close dropdown - but only on click, not hover
             GestureDetector(
               onTap: _removeOverlay,
               child: Container(
@@ -120,9 +113,8 @@ class _CustomAppBarState extends State<CustomAppBar>
                 color: Colors.transparent,
               ),
             ),
-            // Dropdown menu with hover detection
             Positioned(
-              left: position.dx - 50,
+              left: menuType == 'Services' ? position.dx - 350 : position.dx - 50,
               top: position.dy + size.height + 5,
               child: MouseRegion(
                 onEnter: (_) {
@@ -147,9 +139,9 @@ class _CustomAppBarState extends State<CustomAppBar>
                   shadowColor: Colors.black.withValues(alpha: 0.1),
                   child: Container(
                     constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width > 768
-                          ? 400
-                          : 300,
+                      maxWidth: menuType == 'Services' 
+                          ? 900 
+                          : (MediaQuery.of(context).size.width > 768 ? 400 : 300),
                       maxHeight: 500,
                     ),
                     decoration: BoxDecoration(
@@ -185,17 +177,15 @@ class _CustomAppBarState extends State<CustomAppBar>
         return const AboutUsMenu();
       case 'Resources':
         return const ResourcesMenu();
+      case 'Services':
+        return ServicesDropdown(onClose: _removeOverlay);
       default:
         return Container();
     }
   }
 
-  // Navigation function for non-dropdown items - uses replacements to prevent app bar blink
   void _navigateToPage(String pageRoute) {
-    // Close any open dropdowns first
     _removeOverlay();
-
-    // Use pushReplacementNamed to avoid rebuilding the entire widget tree
     Navigator.pushReplacementNamed(context, pageRoute);
   }
 
@@ -324,7 +314,7 @@ class _CustomAppBarState extends State<CustomAppBar>
     final menuItems = [
       {'title': 'About Us', 'hasDropdown': true, 'route': null},
       {'title': 'Resources', 'hasDropdown': true, 'route': null},
-      {'title': 'Services', 'hasDropdown': false, 'route': '/services'},
+      {'title': 'Services', 'hasDropdown': true, 'route': null},
       {'title': 'Events', 'hasDropdown': false, 'route': '/events'},
       {'title': 'Newsroom', 'hasDropdown': false, 'route': '/newsroom'},
       {'title': 'Shop', 'hasDropdown': false, 'route': '/shop'},
@@ -581,8 +571,8 @@ class _CustomAppBarState extends State<CustomAppBar>
                     _buildMobileMenuItem(
                       'Services',
                       Icons.work_outline,
-                      false,
-                      '/services',
+                      true,
+                      null,
                     ),
                     _buildMobileMenuItem(
                       'Events',
@@ -654,6 +644,8 @@ class _CustomAppBarState extends State<CustomAppBar>
         return AboutUsMenu.getMobileMenuItems();
       case 'Resources':
         return ResourcesMenu.getMobileMenuItems();
+      case 'Services':
+        return ServicesDropdown.getMobileMenuItems();
       default:
         return [];
     }
