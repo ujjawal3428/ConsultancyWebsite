@@ -95,7 +95,7 @@ class _ServicesDropdownState extends State<ServicesDropdown> {
   String? selectedCategory;
   String? selectedDegree;
   String? expandedLevel;
-  final Map<String, bool> _showMoreMap = {};
+  bool _showAllColleges = false;
 
   @override
   Widget build(BuildContext context) {
@@ -260,31 +260,36 @@ class _ServicesDropdownState extends State<ServicesDropdown> {
 
   Widget _buildLevelSection(String level, double screenWidth) {
     final categories = CategoryConfig.config.entries.toList();
-    final showAll = _showMoreMap[level] ?? false;
-    final itemsToShow = showAll ? categories.length : 4;
-    final displayedCategories = categories.take(itemsToShow).toList();
     final isSmallScreen = screenWidth < 600;
     final padding = isSmallScreen ? 16.0 : 20.0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Level Title
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: padding, vertical: 12),
+        // Level Title with highlight
+        Container(
+          width: double.infinity,
+          margin: EdgeInsets.symmetric(horizontal: padding),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFEF2F2),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: const Color(0xFFFFE4E6), width: 1),
+          ),
           child: Text(
             'For $level',
             style: TextStyle(
               fontSize: isSmallScreen ? 14 : 16,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFF6B7280),
+              color: const Color(0xFFEF4444),
               letterSpacing: 0.5,
             ),
           ),
         ),
+        const SizedBox(height: 8),
 
-        // Categories List
-        ...displayedCategories.map((entry) {
+        // Categories List (Display all categories without "Show More")
+        ...categories.map((entry) {
           final category = entry.key;
           final config = entry.value;
 
@@ -294,40 +299,6 @@ class _ServicesDropdownState extends State<ServicesDropdown> {
             screenWidth: screenWidth,
           );
         }),
-
-        // Show More Button
-        if (categories.length > 4)
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: padding, vertical: 12),
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  _showMoreMap[level] = !showAll;
-                });
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    showAll ? 'Show Less' : 'Show More',
-                    style: TextStyle(
-                      fontSize: isSmallScreen ? 13 : 14,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFFEF4444),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  Icon(
-                    showAll
-                        ? Icons.keyboard_arrow_up
-                        : Icons.keyboard_arrow_down,
-                    size: isSmallScreen ? 18 : 20,
-                    color: const Color(0xFFEF4444),
-                  ),
-                ],
-              ),
-            ),
-          ),
 
         const SizedBox(height: 16),
       ],
@@ -407,7 +378,7 @@ class _ServicesDropdownState extends State<ServicesDropdown> {
           ),
         ),
 
-        // Category Title and "View All" link
+        // Category Title
         Padding(
           padding: EdgeInsets.all(padding),
           child: Column(
@@ -431,38 +402,11 @@ class _ServicesDropdownState extends State<ServicesDropdown> {
                   letterSpacing: 0.5,
                 ),
               ),
-              if (screenWidth >= 600) ...[
-                const SizedBox(height: 12),
-                InkWell(
-                  onTap: () {
-                    // Handle "View All" action
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'View All $title Courses',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFFEF4444),
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      const Icon(
-                        Icons.chevron_right,
-                        size: 16,
-                        color: Color(0xFFEF4444),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
             ],
           ),
         ),
 
-        // Degrees List
+        // Degrees List (Display all degrees without "Show More")
         Expanded(
           child: SingleChildScrollView(
             child: Column(
@@ -483,6 +427,7 @@ class _ServicesDropdownState extends State<ServicesDropdown> {
       onTap: () {
         setState(() {
           selectedDegree = degree;
+          _showAllColleges = false; // Reset when selecting a new degree
         });
       },
     );
@@ -491,10 +436,14 @@ class _ServicesDropdownState extends State<ServicesDropdown> {
   Widget _buildCollegesListView(double screenWidth) {
     final config = CategoryConfig.config[selectedCategory!];
     final title = config?['title'] as String? ?? selectedCategory!;
-    final colleges =
+    final allColleges =
         CollegeData.data[selectedCategory!]?[selectedDegree!] ?? [];
     final isSmallScreen = screenWidth < 600;
     final padding = isSmallScreen ? 16.0 : 20.0;
+
+    // Show only 5 colleges initially, then all when expanded
+    final collegesToShow = _showAllColleges ? allColleges.length : 5;
+    final displayedColleges = allColleges.take(collegesToShow).toList();
 
     return Column(
       children: [
@@ -512,6 +461,7 @@ class _ServicesDropdownState extends State<ServicesDropdown> {
                 onTap: () {
                   setState(() {
                     selectedDegree = null;
+                    _showAllColleges = false;
                   });
                 },
                 child: Row(
@@ -569,20 +519,75 @@ class _ServicesDropdownState extends State<ServicesDropdown> {
         Expanded(
           child: SingleChildScrollView(
             child: Column(
-              children: colleges.map((college) {
-                return _CollegeListItem(
-                  college: college,
-                  screenWidth: screenWidth,
-                  onTap: () {
-                    widget.onClose();
-                    Navigator.pushNamed(
-                      context,
-                      '/college-details',
-                      arguments: college,
-                    );
-                  },
-                );
-              }).toList(),
+              children: [
+                ...displayedColleges.map((college) {
+                  return _CollegeListItem(
+                    college: college,
+                    screenWidth: screenWidth,
+                    onTap: () {
+                      widget.onClose();
+                      Navigator.pushNamed(
+                        context,
+                        '/college-details',
+                        arguments: college,
+                      );
+                    },
+                  );
+                }),
+                // Show More Button for Colleges (only if more than 5 colleges)
+                if (allColleges.length > 5)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: padding,
+                      vertical: 16,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          _showAllColleges = !_showAllColleges;
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 24,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFEF2F2),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: const Color(0xFFEF4444),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              _showAllColleges
+                                  ? 'Show Less'
+                                  : 'Show More Colleges',
+                              style: TextStyle(
+                                fontSize: isSmallScreen ? 13 : 14,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFFEF4444),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Icon(
+                              _showAllColleges
+                                  ? Icons.keyboard_arrow_up
+                                  : Icons.keyboard_arrow_down,
+                              size: isSmallScreen ? 18 : 20,
+                              color: const Color(0xFFEF4444),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
         ),

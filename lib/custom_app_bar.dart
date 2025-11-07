@@ -114,7 +114,9 @@ class _CustomAppBarState extends State<CustomAppBar>
               ),
             ),
             Positioned(
-              left: menuType == 'Services' ? position.dx - 350 : position.dx - 50,
+              left: menuType == 'Services'
+                  ? position.dx - 350
+                  : position.dx - 50,
               top: position.dy + size.height + 5,
               child: MouseRegion(
                 onEnter: (_) {
@@ -139,9 +141,11 @@ class _CustomAppBarState extends State<CustomAppBar>
                   shadowColor: Colors.black.withValues(alpha: 0.1),
                   child: Container(
                     constraints: BoxConstraints(
-                      maxWidth: menuType == 'Services' 
-                          ? 900 
-                          : (MediaQuery.of(context).size.width > 768 ? 400 : 300),
+                      maxWidth: menuType == 'Services'
+                          ? 900
+                          : (MediaQuery.of(context).size.width > 768
+                                ? 400
+                                : 300),
                       maxHeight: 500,
                     ),
                     decoration: BoxDecoration(
@@ -192,9 +196,10 @@ class _CustomAppBarState extends State<CustomAppBar>
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isDesktop = screenWidth > 1024;
-    final isTablet = screenWidth > 768 && screenWidth <= 1024;
-    final isMobile = screenWidth <= 768;
+    // Adjusted breakpoints: mobile menu appears at 950px and below
+    final isDesktop = screenWidth > 1200;
+    final isTablet = screenWidth > 950 && screenWidth <= 1200;
+    final isMobile = screenWidth <= 950;
 
     return SlideTransition(
       position: _slideAnimation,
@@ -219,14 +224,14 @@ class _CustomAppBarState extends State<CustomAppBar>
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: isDesktop ? 32 : (isTablet ? 24 : 16),
+            horizontal: isDesktop ? 32 : (isTablet ? 20 : 16),
             vertical: isDesktop ? 18 : 15,
           ),
           child: Row(
             children: [
               _buildLogo(isDesktop, isTablet),
               const Spacer(),
-              if (!isMobile) _buildDesktopNavigation(isDesktop),
+              if (!isMobile) _buildDesktopNavigation(isDesktop, isTablet),
               if (isMobile) _buildMobileMenuButton(),
             ],
           ),
@@ -236,9 +241,7 @@ class _CustomAppBarState extends State<CustomAppBar>
   }
 
   Widget _buildLogo(bool isDesktop, bool isTablet) {
-    final logoSize = isDesktop ? 45.0 : (isTablet ? 42.0 : 38.0);
-    final titleSize = isDesktop ? 22.0 : (isTablet ? 20.0 : 18.0);
-    final subtitleSize = isDesktop ? 15.0 : (isTablet ? 14.0 : 12.0);
+    final logoHeight = isDesktop ? 42.0 : (isTablet ? 37.0 : 35.0);
 
     return TweenAnimationBuilder<double>(
       duration: const Duration(milliseconds: 600),
@@ -249,60 +252,10 @@ class _CustomAppBarState extends State<CustomAppBar>
           child: InkWell(
             onTap: () => Navigator.pushNamed(context, '/'),
             borderRadius: BorderRadius.circular(12),
-            child: Row(
-              children: [
-                Container(
-                  width: logoSize,
-                  height: logoSize,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFE53E3E), Color(0xFFD53F8C)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFFE53E3E).withValues(alpha: 0.3),
-                        offset: const Offset(0, 4),
-                        blurRadius: 8,
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Icons.psychology_outlined,
-                    color: Colors.white,
-                    size: logoSize * 0.6,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'IQAdmit',
-                      style: TextStyle(
-                        fontFamily: 'The Seasons',
-                        fontSize: titleSize,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF111827),
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                    Text(
-                      'Pro',
-                      style: TextStyle(
-                        fontFamily: 'The Seasons',
-                        fontSize: subtitleSize,
-                        color: const Color(0xFFE53E3E),
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+            child: Image.asset(
+              'assets/images/iqlogored.png',
+              height: logoHeight,
+              fit: BoxFit.contain,
             ),
           ),
         );
@@ -310,7 +263,7 @@ class _CustomAppBarState extends State<CustomAppBar>
     );
   }
 
-  Widget _buildDesktopNavigation(bool isDesktop) {
+  Widget _buildDesktopNavigation(bool isDesktop, bool isTablet) {
     final menuItems = [
       {'title': 'About Us', 'hasDropdown': true, 'route': null},
       {'title': 'Resources', 'hasDropdown': true, 'route': null},
@@ -328,10 +281,11 @@ class _CustomAppBarState extends State<CustomAppBar>
             item['hasDropdown'] as bool,
             item['route'] as String?,
             isDesktop,
+            isTablet,
           ),
         ),
-        SizedBox(width: isDesktop ? 24 : 16),
-        _buildConsultButton(isDesktop),
+        SizedBox(width: isDesktop ? 20 : 12),
+        _buildConsultButton(isDesktop, isTablet),
       ],
     );
   }
@@ -341,13 +295,20 @@ class _CustomAppBarState extends State<CustomAppBar>
     bool hasDropdown,
     String? route,
     bool isDesktop,
+    bool isTablet,
   ) {
     final GlobalKey buttonKey = GlobalKey();
     final isActive = _activeDropdown == title;
     final isHovered = _hoveredItem == title;
 
+    // Compact spacing for tablet
+    final horizontalPadding = isDesktop ? 8.0 : 4.0;
+    final verticalPadding = isDesktop ? 12.0 : 10.0;
+    final innerHorizontal = isDesktop ? 16.0 : 10.0;
+    final fontSize = isDesktop ? 15.0 : 13.5;
+
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 8 : 6),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Material(
         color: Colors.transparent,
         child: MouseRegion(
@@ -391,8 +352,8 @@ class _CustomAppBarState extends State<CustomAppBar>
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 150),
               padding: EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: isDesktop ? 16 : 12,
+                vertical: verticalPadding,
+                horizontal: innerHorizontal,
               ),
               decoration: BoxDecoration(
                 color: (isActive || isHovered)
@@ -407,7 +368,7 @@ class _CustomAppBarState extends State<CustomAppBar>
                     title,
                     style: TextStyle(
                       fontFamily: 'The Seasons',
-                      fontSize: isDesktop ? 15 : 14,
+                      fontSize: fontSize,
                       fontWeight: FontWeight.w800,
                       color: (isActive || isHovered)
                           ? const Color(0xFFE53E3E)
@@ -415,13 +376,13 @@ class _CustomAppBarState extends State<CustomAppBar>
                     ),
                   ),
                   if (hasDropdown) ...[
-                    const SizedBox(width: 4),
+                    const SizedBox(width: 3),
                     AnimatedRotation(
                       turns: isActive ? 0.5 : 0,
                       duration: const Duration(milliseconds: 150),
                       child: Icon(
                         Icons.keyboard_arrow_down,
-                        size: 18,
+                        size: isDesktop ? 18 : 16,
                         color: (isActive || isHovered)
                             ? const Color(0xFFE53E3E)
                             : const Color(0xFF6B7280),
@@ -437,7 +398,7 @@ class _CustomAppBarState extends State<CustomAppBar>
     );
   }
 
-  Widget _buildConsultButton(bool isDesktop) {
+  Widget _buildConsultButton(bool isDesktop, bool isTablet) {
     return TweenAnimationBuilder<double>(
       duration: const Duration(milliseconds: 800),
       tween: Tween(begin: 0.0, end: 1.0),
@@ -475,8 +436,8 @@ class _CustomAppBarState extends State<CustomAppBar>
                 borderRadius: BorderRadius.circular(30),
                 child: Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: isDesktop ? 28 : 24,
-                    vertical: isDesktop ? 14 : 12,
+                    horizontal: isDesktop ? 28 : 20,
+                    vertical: isDesktop ? 14 : 11,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -486,12 +447,12 @@ class _CustomAppBarState extends State<CustomAppBar>
                         size: isDesktop ? 16 : 14,
                         color: Colors.white,
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: isDesktop ? 8 : 6),
                       Text(
                         'Consult Now',
                         style: TextStyle(
                           fontFamily: 'The Seasons',
-                          fontSize: isDesktop ? 15 : 14,
+                          fontSize: isDesktop ? 15 : 13.5,
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
                         ),
@@ -598,7 +559,7 @@ class _CustomAppBarState extends State<CustomAppBar>
             ),
             Padding(
               padding: const EdgeInsets.all(24),
-              child: _buildConsultButton(false),
+              child: _buildConsultButton(false, false),
             ),
           ],
         ),
