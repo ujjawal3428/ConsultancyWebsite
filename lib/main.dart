@@ -1,3 +1,4 @@
+import 'package:consultancy_website/admin/admin_login_screen.dart';
 import 'package:consultancy_website/form.dart';
 import 'package:consultancy_website/screens/shop.dart' show ShopPage;
 import 'package:consultancy_website/services/undergraduateprep.dart';
@@ -36,6 +37,7 @@ class MainApp extends StatelessWidget {
         '/newsroom': (context) => const Newsroom(),
         '/shop': (context) => const ShopPage(),
         '/formscreen': (context) => const FormScreen(),
+        '/admin': (context) => const AdminLoginScreen(),
 
         //Service routes
         '/undergraduate-preparation': (context) => const Undergraduateprep(),

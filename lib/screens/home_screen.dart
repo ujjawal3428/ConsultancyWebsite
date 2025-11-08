@@ -69,6 +69,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
             // Your CustomAppBar on top
             CustomAppBar(),
+            // Temporary admin button - REMOVE BEFORE PRODUCTION
+            Positioned(
+              bottom: 20,
+              right: 20,
+              child: FloatingActionButton(
+                onPressed: () => Navigator.pushNamed(context, '/admin'),
+                backgroundColor: Colors.black87,
+                child: const Icon(Icons.admin_panel_settings),
+                tooltip: 'Admin Panel (Dev Only)',
+              ),
+            ),
           ],
         ),
       ),
