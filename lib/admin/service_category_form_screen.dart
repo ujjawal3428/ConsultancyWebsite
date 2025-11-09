@@ -215,7 +215,7 @@ class _ServiceCategoryFormScreenState extends State<ServiceCategoryFormScreen> {
                       title: const Text('Active'),
                       value: _isActive,
                       onChanged: (value) => setState(() => _isActive = value),
-                      activeColor: const Color(0xFFEF4444),
+                      activeThumbColor: const Color(0xFFEF4444),
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(

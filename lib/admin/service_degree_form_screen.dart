@@ -80,7 +80,7 @@ class _ServiceDegreeFormScreenState extends State<ServiceDegreeFormScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     DropdownButtonFormField<String>(
-                      value: _selectedCategoryId,
+                      initialValue: _selectedCategoryId,
                       decoration: const InputDecoration(
                         labelText: 'Category',
                         border: OutlineInputBorder(),
@@ -148,7 +148,7 @@ class _ServiceDegreeFormScreenState extends State<ServiceDegreeFormScreen> {
                       title: const Text('Active'),
                       value: _isActive,
                       onChanged: (value) => setState(() => _isActive = value),
-                      activeColor: const Color(0xFFEF4444),
+                      activeThumbColor: const Color(0xFFEF4444),
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(

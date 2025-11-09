@@ -76,8 +76,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: FloatingActionButton(
                 onPressed: () => Navigator.pushNamed(context, '/admin'),
                 backgroundColor: Colors.black87,
-                child: const Icon(Icons.admin_panel_settings),
                 tooltip: 'Admin Panel (Dev Only)',
+                child: const Icon(Icons.admin_panel_settings),
               ),
             ),
           ],
