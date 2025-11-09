@@ -3,8 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/content_item.dart';
 
 class ContentService {
-  // TODO: Replace with your actual backend URL
-  static const String baseUrl = 'http://localhost:3000/api/content';
+  static const String baseUrl = 'http://localhost:55611/#/admin';
 
   // Get all content items
   Future<List<ContentItem>> getAllContent({String? category}) async {

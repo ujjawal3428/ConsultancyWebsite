@@ -1,6 +1,7 @@
 // screens/admin_panel_screen.dart
 import 'package:consultancy_website/admin/manage_admin_screen.dart';
 import 'package:consultancy_website/admin/manage_content_screen.dart';
+import 'package:consultancy_website/admin/manage_services_screen.dart';
 import 'package:flutter/material.dart';
 import '../models/admin_user.dart';
 import '../models/admin_permission.dart';
@@ -309,6 +310,14 @@ class _AdminPanelScreenState extends State<AdminPanelScreen>
                 Colors.purple,
                 () => _navigateToContentManagement(),
               ),
+            if (_currentAdmin!.hasPermission(AdminPermission.editContent))
+              _buildAdminCard(
+                'Manage Services',
+                'Manage categories, degrees & colleges',
+                Icons.business_center,
+                Colors.red,
+                () => _navigateToServicesManagement(),
+              ),
             if (_currentAdmin!.hasPermission(AdminPermission.viewAnalytics))
               _buildAdminCard(
                 'Analytics',
@@ -419,6 +428,13 @@ class _AdminPanelScreenState extends State<AdminPanelScreen>
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const ManageContentScreen()),
+    );
+  }
+
+  void _navigateToServicesManagement() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const ManageServicesScreen()),
     );
   }
 
